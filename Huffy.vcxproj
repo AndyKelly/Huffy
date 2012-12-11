@@ -77,6 +77,7 @@
   <ItemGroup>
     <ClInclude Include="HuffyBaseType.h" />
     <ClInclude Include="HuffyCompressor.h" />
+    <ClInclude Include="HuffyFloat.h" />
     <ClInclude Include="HuffyInt.h" />
     <ClInclude Include="HuffyManager.h" />
     <ClInclude Include="HuffySender.h" />
@@ -91,6 +92,7 @@
     <ClCompile Include="Huffy.cpp" />
     <ClCompile Include="HuffyBaseType.cpp" />
     <ClCompile Include="HuffyCompressor.cpp" />
+    <ClCompile Include="HuffyFloat.cpp" />
     <ClCompile Include="HuffyInt.cpp" />
     <ClCompile Include="HuffyManager.cpp" />
     <ClCompile Include="HuffySender.cpp" />

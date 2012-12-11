@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "HuffyInt.h"
-#include"IDGenerator.h"
+#include "IDGenerator.h"
 #include "HuffyManager.h"
 
 using namespace std;
