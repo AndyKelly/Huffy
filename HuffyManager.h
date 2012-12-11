@@ -63,7 +63,7 @@ public:
 	static void HuffyManager::RegisterHuffyIntAsSendable(std::string, const HuffyInt *);
 	static std::priority_queue<TypeQueueElement, std::vector<TypeQueueElement>,CompareElements> HuffyManager::GetHuffyTypesPriorityQueue(void);
 	static TypeQueueElement* HuffyManager::ConstructHuffyTypeTreeFromPriorityQueue(std::priority_queue<TypeQueueElement, std::vector<TypeQueueElement>,CompareElements>);
-	static void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement*,TypeQueueElement*, TypeQueueElement*);
+	static void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement*);
 	static void HuffyManager::ConstructHuffyTrees(void);
 private:
 	static void IncrementIDFrequencyMapByType(e_HuffyTypes, std::string);

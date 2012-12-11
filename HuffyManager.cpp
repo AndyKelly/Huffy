@@ -106,25 +106,22 @@ HuffyManager::TypeQueueElement* HuffyManager::ConstructHuffyTypeTreeFromPriority
 	Queue.pop();
 
 	//Asign parent pointers
-	AssignParentPointersToTypeQueueElementTree(RootNode, RootNode->m_LeftChild, RootNode->m_RightChild);
+	AssignParentPointersToTypeQueueElementTree(RootNode);
 
 	return RootNode;
 }
 
-void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement* Parent, TypeQueueElement* LeftChild, TypeQueueElement* RightChild)
+void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement* Parent)
 {
-	LeftChild->m_Parent = Parent;
-	RightChild->m_Parent = Parent;
+	Parent->m_LeftChild->m_Parent = Parent;
+	Parent->m_RightChild->m_Parent = Parent;
 
 	//Stop when a child is a leaf node
 	//Todo, wont work when a node has only one child. Will this ever happen?
-	if(LeftChild->m_LeftChild != NULL && LeftChild->m_RightChild != NULL)
+	if(Parent->m_LeftChild != NULL && Parent->m_RightChild != NULL)
 	{
-		AssignParentPointersToTypeQueueElementTree(LeftChild, LeftChild->m_LeftChild, LeftChild->m_RightChild);
-	}
-	if(RightChild->m_LeftChild != NULL && RightChild->m_RightChild != NULL)
-	{
-		AssignParentPointersToTypeQueueElementTree(RightChild, RightChild->m_LeftChild, RightChild->m_RightChild);
+		AssignParentPointersToTypeQueueElementTree(Parent->m_LeftChild);
+		AssignParentPointersToTypeQueueElementTree(Parent->m_RightChild);
 	}
 }
 
