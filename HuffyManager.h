@@ -61,14 +61,15 @@ public:
 	
 	~HuffyManager(void);
 	static void HuffyTypeModified(std::string, e_HuffyTypes);
-	static void HuffyManager::RegisterHuffyIntAsSendable(std::string, const HuffyInt *);
+	static void HuffyManager::RegisterHuffyTypeAsSendable(std::string, const HuffyBaseType *);
 	static std::priority_queue<TypeQueueElement, std::vector<TypeQueueElement>,CompareElements> HuffyManager::GetHuffyTypesPriorityQueue(void);
 	static TypeQueueElement* HuffyManager::ConstructHuffyTypeTreeFromPriorityQueue(std::priority_queue<TypeQueueElement, std::vector<TypeQueueElement>,CompareElements>);
 	static void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement*);
 	static void HuffyManager::ConstructHuffyTrees(void);
 private:
 	static void IncrementIDFrequencyMapByType(e_HuffyTypes, std::string);
-	static std::map<std::string, const HuffyInt* > HuffyIntPtrMap;
+	static void IncrementBitsUsedFrequencyMap(std::string);
+	static std::map<std::string, const HuffyBaseType* > HuffyPtrMap;
 	static std::map<e_HuffyTypes, long long > UsedTypeFrequencyMap;
 	//Todo consider using smaller types?
 	static std::map<std::string, long long > IntIDFrequencyMap;

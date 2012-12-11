@@ -20,7 +20,7 @@ HuffyInt::HuffyInt(int Value, string UniqueID)
 	m_Value = Value;
 	m_Sendable = true;
 	m_HuffyID = IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt);
-	HuffyManager::RegisterHuffyIntAsSendable(m_HuffyID, this);
+	HuffyManager::RegisterHuffyTypeAsSendable(m_HuffyID, this);
 }
 
 HuffyInt::~HuffyInt(void)
@@ -28,7 +28,7 @@ HuffyInt::~HuffyInt(void)
 	//Todo Alert HuffyManager that this object is destroyed
 }
 
-int HuffyInt::GetType(void)
+int HuffyInt::GetType(void) const
 {
 	return HuffyManager::e_HuffyInt;
 }

@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "HuffyManager.h"
 #include "HuffyCompressor.h"
+#include "HuffyFloat.h"
 #include <string>
 #include <list>
 #include <map>
@@ -8,7 +9,7 @@
 using namespace std;
 
 //Init static member variables
-std::map<std::string, const HuffyInt* > HuffyManager::HuffyIntPtrMap;//Todo should be pointers to a base class
+std::map<std::string, const HuffyBaseType* > HuffyManager::HuffyPtrMap;
 std::map<HuffyManager::e_HuffyTypes, long long > HuffyManager::UsedTypeFrequencyMap;
 std::map<int, int> HuffyManager::BitsUsedFrequencyMap;
 std::map<std::string, long long > HuffyManager::IntIDFrequencyMap;
@@ -33,10 +34,11 @@ HuffyManager::~HuffyManager(void)
 
 void HuffyManager::ConstructHuffyTrees(void)
 {
+	//Todo impliment
 	TypeQueueElement* RootNode = ConstructHuffyTypeTreeFromPriorityQueue(GetHuffyTypesPriorityQueue());
 	if(RootNode != NULL)
 	{
-
+		
 	}
 }
 
@@ -127,23 +129,73 @@ void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement* 
 
 void HuffyManager::HuffyTypeModified(string ID, e_HuffyTypes e_Type)
 {
-	//Todo clean this up
-	//Check if map entry exists, if not init, else increment
 	IncrementIDFrequencyMapByType(e_Type, ID);
+	IncrementBitsUsedFrequencyMap(ID);
 
 	//Check if map entry exists, if not init, else increment
-	if(UsedTypeFrequencyMap.find(e_HuffyInt) == UsedTypeFrequencyMap.end()) 
+	if(UsedTypeFrequencyMap.find(e_Type) == UsedTypeFrequencyMap.end()) 
 	{
-		UsedTypeFrequencyMap[e_HuffyInt] = 0;
+		UsedTypeFrequencyMap[e_Type] = 0;
 	}
 	else 
 	{
-		UsedTypeFrequencyMap[e_HuffyInt]++;
+		UsedTypeFrequencyMap[e_Type]++;
 	}
 
+	//Todo, should reword this, Marked as needing to be sent etc
+	AddHuffyIntByIDToCompressor(ID);
+
+}
+
+void HuffyManager::IncrementBitsUsedFrequencyMap(string ID)
+{
+	
+	int BitsUsed = 0;
+	const HuffyBaseType* TempBasePointer = HuffyPtrMap[ID];
+
+	//Todo, it;s probably a bad idea to use reinterpret_cast
+   try
+   {
+	   switch(HuffyPtrMap[ID]->GetType())
+	   {
+		   case e_HuffyInt:
+			   {
+				   const HuffyInt* HuffyIntPointer = reinterpret_cast<const HuffyInt*>(TempBasePointer) ;
+				   BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyIntPointer->GetValue_C());
+				   break;
+			   }
+		   case e_HuffyFloat:
+			   {
+					const HuffyFloat* HuffyFloatPointer = reinterpret_cast<const HuffyFloat*>(TempBasePointer) ;
+					//Todo overload this function
+					BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyFloatPointer->GetValue_C());
+					break;
+			   }
+		   case e_HuffyVec2D:
+				   //const HuffyVec2D* HuffyVec2DPointer = reinterpret_cast<const HuffyVec2D*>(TempBasePointer) ;
+				   //BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyVec2DPointer->GetValue_C());
+				   break;
+		   case e_HuffyVec3D:
+				   //const HuffyVec3D* HuffyVec3DPointer = reinterpret_cast<const HuffyVec3D*>(TempBasePointer) ;
+				   //BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyVec3DPointer->GetValue_C());
+				   break;
+		   case e_HuffyString:
+			   //const HuffyString* HuffyStringPointer = reinterpret_cast<const HuffyString*>(TempBasePointer) ;
+			   //BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyStringPointer->GetValue_C());
+			   break;
+		   case e_HuffyBool:
+			   //const HuffyBool* HuffyBoolPointer = reinterpret_cast<const HuffyBool*>(TempBasePointer) ;
+			   //BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyBoolPointer->GetValue_C());
+			   break;
+	   }
+
+	}
+    catch (const std::bad_cast& e)
+    {
+		//Todo some way of logging this error
+    }
+
 	//Check if map entry exists, if not init, else increment
-	////Ask compressor how many bits are used
-	int BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyManager::HuffyIntPtrMap[ID]->GetValue_C());
 	if(BitsUsedFrequencyMap.find(BitsUsed) == BitsUsedFrequencyMap.end()) 
 	{
 		BitsUsedFrequencyMap[BitsUsed] = 0;
@@ -152,9 +204,6 @@ void HuffyManager::HuffyTypeModified(string ID, e_HuffyTypes e_Type)
 	{
 		BitsUsedFrequencyMap[BitsUsed]++;
 	}
-
-	AddHuffyIntByIDToCompressor(ID);
-
 }
 
 void HuffyManager::IncrementIDFrequencyMapByType(HuffyManager::e_HuffyTypes TypeToIncrement, string IDToIncrement)
@@ -227,14 +276,15 @@ void HuffyManager::IncrementIDFrequencyMapByType(HuffyManager::e_HuffyTypes Type
 }
 
 //Todo, refactor to use a common base class between types
-void HuffyManager::RegisterHuffyIntAsSendable(string m_HuffyID, const HuffyInt* SendableHuffyInt)
+void HuffyManager::RegisterHuffyTypeAsSendable(string m_HuffyID, const HuffyBaseType* SendableHuffyType)
 {
-	HuffyManager::HuffyIntPtrMap[m_HuffyID] = SendableHuffyInt;
+	HuffyManager::HuffyPtrMap[m_HuffyID] = SendableHuffyType;
 }
 
 //Todo refactor for each type using templates?
 void HuffyManager::AddHuffyIntByIDToCompressor(string ID)
 {
+	//To do, dynamic casts
 	//Figure out types here
-	HuffyCompressor::AddIntToOutStream(HuffyManager::HuffyIntPtrMap[ID]->GetValue_C());
+	//HuffyCompressor::AddIntToOutStream(HuffyManager::HuffyPtrMap[ID]->GetValue_C());
 }

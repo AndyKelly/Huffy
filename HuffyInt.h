@@ -21,7 +21,7 @@ public:
 	~HuffyInt(void);
 
 	//Virtual overrides
-	int GetType(void);
+	int GetType(void) const;
 
 	//Getter functions
 	int GetValue_C(void)const;
