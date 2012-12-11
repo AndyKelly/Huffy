@@ -19,7 +19,7 @@ HuffyInt::HuffyInt(int Value, string UniqueID)
 {
 	m_Value = Value;
 	m_Sendable = true;
-	m_HuffyID = IDGenerator::CreateHuffyIntID();
+	m_HuffyID = IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt);
 	HuffyManager::RegisterHuffyIntAsSendable(m_HuffyID, this);
 }
 
