@@ -48,6 +48,9 @@
     <ClInclude Include="PriorityQueueUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HuffyBaseType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -75,6 +78,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OutputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HuffyBaseType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

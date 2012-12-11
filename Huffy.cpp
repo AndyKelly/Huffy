@@ -24,13 +24,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 void UnitTestHuffyInt()
 {
-	cout << "Begining test, please enter an int value";
+	cout << "\nBegining test, please enter an int value\n";
 	InputManager Input;
 	OutputManager Output;
 	int ValueToTest = Input.GetIntFromUser();
 	HuffyInt HuffyIntToTest(ValueToTest, "TestINt");
 
-	cout << "Created an int with the value: ";
+	cout << "\nCreated an int with the value: \n";
 	Output.PrintInt(HuffyIntToTest.GetValue());
 	cout << "\n Running unit tests \n";
 	system("PAUSE");
@@ -56,23 +56,26 @@ void UnitTestHuffyInt()
 
 	if(HuffyIntToTest.GetValue() == ValueToTest)
 	{
-		cout << "Test Passed both values are equal\n";
+		cout << "\nTest Passed both values are equal\n";
 
 		if(HuffyIntToTest.isBeingSent())
 		{
-			cout << "Huffy int is still being sent";
+			cout << "\nHuffy int is still being sent\n";
 		}
 		else 
 		{
-			cout << "Huffy int is not being sent";
+			cout << "\nHuffy int is not being sent\n";
 		}
+
+		cout << "\nHuffy Type value is:\n";
+		Output.PrintInt(HuffyIntToTest.GetType());
 	}
 	else
 	{
-		cout << "Test failed\n";
-		cout << "Int value is:\n";
+		cout << "\nTest failed\n";
+		cout << "\nInt value is:\n";
 		Output.PrintInt(ValueToTest);
-		cout << "HuffyInt value is:\n";
+		cout << "\nHuffyInt value is:\n";
 		Output.PrintInt(HuffyIntToTest.GetValue());
 	}
 	system("PAUSE");

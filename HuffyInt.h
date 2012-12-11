@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
-class HuffyInt
+#include "HuffyBaseType.h"
+
+class HuffyInt : HuffyBaseType
 {
 	
 private:
@@ -17,6 +19,9 @@ public:
 	HuffyInt(int Value);
 	HuffyInt(int Value, std::string UniqueID);
 	~HuffyInt(void);
+
+	//Virtual overrides
+	int GetType(void);
 
 	//Getter functions
 	int GetValue_C(void)const;

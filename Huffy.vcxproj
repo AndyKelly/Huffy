@@ -75,6 +75,7 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HuffyBaseType.h" />
     <ClInclude Include="HuffyCompressor.h" />
     <ClInclude Include="HuffyInt.h" />
     <ClInclude Include="HuffyManager.h" />
@@ -88,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Huffy.cpp" />
+    <ClCompile Include="HuffyBaseType.cpp" />
     <ClCompile Include="HuffyCompressor.cpp" />
     <ClCompile Include="HuffyInt.cpp" />
     <ClCompile Include="HuffyManager.cpp" />

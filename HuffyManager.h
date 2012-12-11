@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "HuffyInt.h"
+#include "HuffyBaseType.h"
 #include "HuffyCompressor.h"
 #include "PriorityQueueUtility.h"
 #include <list>

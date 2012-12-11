@@ -1,11 +1,11 @@
 #include "StdAfx.h"
 #include "HuffyInt.h"
-#include "HuffyManager.h"
 #include"IDGenerator.h"
+#include "HuffyManager.h"
 
 using namespace std;
 
-HuffyInt::HuffyInt(void)
+HuffyInt::HuffyInt(void) 
 {
 	m_Value = 0;
 }
@@ -25,6 +25,12 @@ HuffyInt::HuffyInt(int Value, string UniqueID)
 
 HuffyInt::~HuffyInt(void)
 {
+	//Todo Alert HuffyManager that this object is destroyed
+}
+
+int HuffyInt::GetType(void)
+{
+	return HuffyManager::e_HuffyInt;
 }
 
 //Gets
