@@ -30,6 +30,12 @@ int HuffyCompressor::HowManyBitsToStoreThis(int)
 	return 0;
 }
 
+int HuffyCompressor::HowManyBitsToStoreThis(float)
+{
+	//Todo implement
+	return 0;
+}
+
 void HuffyCompressor::writeInt(int Value,int numBitsToWrite)
 {     
 	int bitsWritten = 0;

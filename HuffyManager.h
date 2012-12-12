@@ -12,20 +12,20 @@
 class HuffyManager
 {
 public:
-	//Todo, Consider replacing this, see: GetHuffyTypesPriorityQueue()
-	static enum e_HuffyTypes 
+	enum e_HuffyTypes 
 	{
-		e_HuffyInt = 0,
+		e_HuffyNonLeaf= NULL,
+		e_HuffyInt,
 		e_HuffyFloat,
-		e_HuffyVec2D,
-		e_HuffyVec3D,
-		e_HuffyString,
 		e_HuffyBool,
-		e_HuffyNonLeaf,
-		e_MAX
 	};
 
-	//Todo m_TypeValue should be a generic T 
+		~HuffyManager(void);
+	static void HuffyTypeModified(e_HuffyTypes, std::string);
+	static void HuffyManager::RegisterHuffyTypeAsSendable(std::string, const HuffyBaseType *);
+	static void HuffyManager::ConstructHuffyTrees(void);
+private:
+	//Todo, can we refactor these three structs into one common data type?
 	struct TypeQueueElement
 	{
 		TypeQueueElement(e_HuffyTypes TypeValue,
@@ -47,8 +47,50 @@ public:
 		TypeQueueElement* m_RightChild;
 		TypeQueueElement* m_Parent;
 	};
+	struct IDQueueElement
+	{
+		IDQueueElement(std::string ID,
+			int Frequency,
+			IDQueueElement* LeftChild,
+			IDQueueElement* RightChild,
+			IDQueueElement* Parent)
+		{
+			m_ID = ID;
+			m_Frequency = Frequency;
+			m_LeftChild = LeftChild;
+			m_RightChild = RightChild;
+			m_Parent = Parent;
+		}
 
-	class CompareElements 
+		std::string m_ID;
+		int m_Frequency;
+		IDQueueElement* m_LeftChild;
+		IDQueueElement* m_RightChild;
+		IDQueueElement* m_Parent;
+	};
+	struct BitsUsedQueueElement
+	{
+		BitsUsedQueueElement(int BitsUsed,
+			int Frequency,
+			BitsUsedQueueElement* LeftChild,
+			BitsUsedQueueElement* RightChild,
+			BitsUsedQueueElement* Parent)
+		{
+			m_BitsUsed = BitsUsed;
+			m_Frequency = Frequency;
+			m_LeftChild = LeftChild;
+			m_RightChild = RightChild;
+			m_Parent = Parent;
+		}
+
+		int m_BitsUsed;
+		int m_Frequency;
+		BitsUsedQueueElement* m_LeftChild;
+		BitsUsedQueueElement* m_RightChild;
+		BitsUsedQueueElement* m_Parent;
+	};
+
+	class CompareTypeElements 
 	{
 		public:
 		bool operator()(TypeQueueElement& Q1, TypeQueueElement& Q2)
@@ -57,28 +99,52 @@ public:
 			return false;
 		};
 	};
-	
-	
-	~HuffyManager(void);
-	static void HuffyTypeModified(std::string, e_HuffyTypes);
-	static void HuffyManager::RegisterHuffyTypeAsSendable(std::string, const HuffyBaseType *);
-	static std::priority_queue<TypeQueueElement, std::vector<TypeQueueElement>,CompareElements> HuffyManager::GetHuffyTypesPriorityQueue(void);
-	static TypeQueueElement* HuffyManager::ConstructHuffyTypeTreeFromPriorityQueue(std::priority_queue<TypeQueueElement, std::vector<TypeQueueElement>,CompareElements>);
-	static void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement*);
-	static void HuffyManager::ConstructHuffyTrees(void);
-private:
+	class CompareIDElements 
+	{
+		public:
+		bool operator()(IDQueueElement& Q1, IDQueueElement& Q2)
+		{
+			if (Q1.m_Frequency > Q2.m_Frequency) return true;
+			return false;
+		};
+	};
+	class CompareBitsUsedElements 
+	{
+		public:
+		bool operator()(BitsUsedQueueElement& Q1, BitsUsedQueueElement& Q2)
+		{
+			if (Q1.m_Frequency > Q2.m_Frequency) return true;
+			return false;
+		};
+	};
+
 	static void IncrementIDFrequencyMapByType(e_HuffyTypes, std::string);
-	static void IncrementBitsUsedFrequencyMap(std::string);
+	static void IncrementBitsUsedFrequencyMapByType(e_HuffyTypes, std::string);
 	static std::map<std::string, const HuffyBaseType* > HuffyPtrMap;
+
+	//Frequency maps
+	//Todo consider using smaller types than long long?
 	static std::map<e_HuffyTypes, long long > UsedTypeFrequencyMap;
-	//Todo consider using smaller types?
 	static std::map<std::string, long long > IntIDFrequencyMap;
 	static std::map<std::string, long long > FloatIDFrequencyMap;
-	static std::map<std::string, long long > StringIDFrequencyMap;
 	static std::map<std::string, long long > BoolIDFrequencyMap;
-	static std::map<std::string, long long > Vector2DIDFrequencyMap;
-	static std::map<std::string, long long > Vector3DIDFrequencyMap;
 	static std::map<int, int> BitsUsedFrequencyMap;
+
+	//PriorityQueue Constructors
+	static std::priority_queue<TypeQueueElement, std::vector<TypeQueueElement>,CompareTypeElements> HuffyManager::GetHuffyTypesPriorityQueue(void);
+	static std::priority_queue<IDQueueElement, std::vector<IDQueueElement>,CompareIDElements> HuffyManager::GetIDPriorityQueueByType(e_HuffyTypes);
+	static std::priority_queue<BitsUsedQueueElement, std::vector<BitsUsedQueueElement>,CompareBitsUsedElements> HuffyManager::GetBitsUsedPriorityQueue(void);
+
+	//HuffyTree Constructors
+	static TypeQueueElement* HuffyManager::ConstructHuffyTypeTreeFromPriorityQueue(std::priority_queue<TypeQueueElement, std::vector<TypeQueueElement>,CompareTypeElements>);
+	static IDQueueElement* HuffyManager::ConstructHuffyIDTreeFromPriorityQueue(std::priority_queue<IDQueueElement, std::vector<IDQueueElement>,CompareIDElements>);
+	static BitsUsedQueueElement* HuffyManager::ConstructHuffyBitsUsedTreeFromPriorityQueue(std::priority_queue<BitsUsedQueueElement, std::vector<BitsUsedQueueElement>,CompareBitsUsedElements>);
+	
+	//Backwards link Huffy trees
+	static void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement*);
+	static void HuffyManager::AssignParentPointersToIDQueueElementTree(IDQueueElement*);
+	static void HuffyManager::AssignParentPointersToBitsUsedQueueElementTree(BitsUsedQueueElement*);
+
 	static void HuffyManager::AddHuffyIntByIDToCompressor(std::string);
 	HuffyManager(void);
 };

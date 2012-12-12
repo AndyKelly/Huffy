@@ -7,6 +7,7 @@ public:
 	~HuffyCompressor(void);
 	static void HuffyCompressor::AddIntToOutStream(int);
 	static int HuffyCompressor::HowManyBitsToStoreThis(int);
+	static int HuffyCompressor::HowManyBitsToStoreThis(float);
 private:
 	static void HuffyCompressor::WriteIntToBuffer(int);
 	static int HuffyCompressor::ReadIntFromBuffer(void);

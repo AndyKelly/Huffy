@@ -14,12 +14,9 @@ std::map<HuffyManager::e_HuffyTypes, long long > HuffyManager::UsedTypeFrequency
 std::map<int, int> HuffyManager::BitsUsedFrequencyMap;
 std::map<std::string, long long > HuffyManager::IntIDFrequencyMap;
 std::map<std::string, long long > HuffyManager::FloatIDFrequencyMap;
-std::map<std::string, long long > HuffyManager::StringIDFrequencyMap;
 std::map<std::string, long long > HuffyManager::BoolIDFrequencyMap;
-std::map<std::string, long long > HuffyManager::Vector2DIDFrequencyMap;
-std::map<std::string, long long > HuffyManager::Vector3DIDFrequencyMap;
 
-
+//Todo should init all values of map to 1
 
 //Todo, should be a singleton
 HuffyManager::HuffyManager(void)
@@ -35,33 +32,81 @@ HuffyManager::~HuffyManager(void)
 void HuffyManager::ConstructHuffyTrees(void)
 {
 	//Todo impliment
-	TypeQueueElement* RootNode = ConstructHuffyTypeTreeFromPriorityQueue(GetHuffyTypesPriorityQueue());
-	if(RootNode != NULL)
-	{
-		
-	}
+	TypeQueueElement* TypeTreeRootNode = ConstructHuffyTypeTreeFromPriorityQueue(GetHuffyTypesPriorityQueue());
+	IDQueueElement* IntIDTreeRootNode = ConstructHuffyIDTreeFromPriorityQueue(GetIDPriorityQueueByType(e_HuffyInt));
+	IDQueueElement* FloatIDTreeRootNode = ConstructHuffyIDTreeFromPriorityQueue(GetIDPriorityQueueByType(e_HuffyFloat));
+	IDQueueElement* BoolIDTreeRootNode = ConstructHuffyIDTreeFromPriorityQueue(GetIDPriorityQueueByType(e_HuffyBool));
+	BitsUsedQueueElement* BitsUsedTreeRootNode = ConstructHuffyBitsUsedTreeFromPriorityQueue(GetBitsUsedPriorityQueue());
+	//Verify correct init
+	//Leave pointers somewhere sensible
 }
 
-priority_queue<HuffyManager::TypeQueueElement, vector<HuffyManager::TypeQueueElement>,HuffyManager::CompareElements> HuffyManager::GetHuffyTypesPriorityQueue()
+//Construct priority queues
+
+priority_queue<HuffyManager::TypeQueueElement, vector<HuffyManager::TypeQueueElement>,HuffyManager::CompareTypeElements> HuffyManager::GetHuffyTypesPriorityQueue()
 {
-	priority_queue<TypeQueueElement, vector<TypeQueueElement>,CompareElements> TypesPQ;
+	priority_queue<TypeQueueElement, vector<TypeQueueElement>,CompareTypeElements> TypesPQ;
 
-	//Todo, dont like this, depends on enum type starting with 0 and having an increment of 1. Consider rewriting this
-	for(int i=0; i < e_HuffyTypes::e_MAX; i++)
+	std::map<e_HuffyTypes, long long  >::iterator itr;
+
+	for(itr = UsedTypeFrequencyMap.begin(); itr != UsedTypeFrequencyMap.end(); itr++)
 	{
-		e_HuffyTypes eCurrent = (HuffyManager::e_HuffyTypes) i;
-		//Check to see if type has been used/is present in the frequency map, if so add to queue
-		if(UsedTypeFrequencyMap.find(eCurrent) != UsedTypeFrequencyMap.end()) 
-		{
-			TypesPQ.push(TypeQueueElement(eCurrent , UsedTypeFrequencyMap[eCurrent], NULL, NULL, NULL));
-		}
+		TypesPQ.push(TypeQueueElement(itr->first, itr->second, NULL, NULL, NULL));
 	}
-
+	
 	return TypesPQ;
 }
 
+priority_queue<HuffyManager::IDQueueElement, vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> HuffyManager::GetIDPriorityQueueByType(e_HuffyTypes MapToUse)
+{
+	priority_queue<IDQueueElement, vector<IDQueueElement>,CompareIDElements> IDPQ;
+	std::map<std::string, long long >::iterator itr;
+
+	switch(MapToUse)
+	{
+		case e_HuffyInt:
+		{
+			for(itr = IntIDFrequencyMap.begin(); itr != IntIDFrequencyMap.end(); itr++)
+			{
+				IDPQ.push(IDQueueElement(itr->first, itr->second, NULL, NULL, NULL));
+			}
+		}
+		case e_HuffyFloat:
+		{
+			for(itr = FloatIDFrequencyMap.begin(); itr != FloatIDFrequencyMap.end(); itr++)
+			{
+				IDPQ.push(IDQueueElement(itr->first, itr->second, NULL, NULL, NULL));
+			}
+		}
+		case e_HuffyBool:
+		{
+			for(itr = BoolIDFrequencyMap.begin(); itr != BoolIDFrequencyMap.end(); itr++)
+			{
+				IDPQ.push(IDQueueElement(itr->first, itr->second, NULL, NULL, NULL));
+			}
+		}
+	}
+
+	return IDPQ;
+}
+
+priority_queue<HuffyManager::BitsUsedQueueElement, vector<HuffyManager::BitsUsedQueueElement>,HuffyManager::CompareBitsUsedElements> HuffyManager::GetBitsUsedPriorityQueue()
+{
+	priority_queue<BitsUsedQueueElement, vector<BitsUsedQueueElement>,CompareBitsUsedElements> BitsUsedPQ;
+	std::map<int, int>::iterator itr;
+
+	for(itr = BitsUsedFrequencyMap.begin(); itr != BitsUsedFrequencyMap.end(); itr++)
+	{
+		BitsUsedPQ.push(BitsUsedQueueElement(itr->first, itr->second, NULL, NULL, NULL));
+	}
+
+	return BitsUsedPQ;
+}
+
+//Construct Huffy Trees
+
 HuffyManager::TypeQueueElement* HuffyManager::ConstructHuffyTypeTreeFromPriorityQueue(priority_queue<HuffyManager::TypeQueueElement,
-	vector<HuffyManager::TypeQueueElement>,HuffyManager::CompareElements> Queue)
+	vector<HuffyManager::TypeQueueElement>,HuffyManager::CompareTypeElements> Queue)
 {
 	//Todo, verify that a Queue has more than 1 element present
 	if(Queue.size() < 2)
@@ -113,7 +158,130 @@ HuffyManager::TypeQueueElement* HuffyManager::ConstructHuffyTypeTreeFromPriority
 	return RootNode;
 }
 
+HuffyManager::IDQueueElement* HuffyManager::ConstructHuffyIDTreeFromPriorityQueue(priority_queue<HuffyManager::IDQueueElement,
+	vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> Queue)
+{
+	//Todo, verify that a Queue has more than 1 element present
+	if(Queue.size() < 2)
+	{
+		return NULL;
+	}
+	//While there is more than one node in the queue:
+	while(!Queue.size() > 1)
+	{
+		//Remove the two nodes of highest priority (lowest probability) from the queue
+		//Todo consider splitting up this line, is there much of an overhead for Queue.Top() ?
+		IDQueueElement *Left = new IDQueueElement(
+			Queue.top().m_ID,
+			Queue.top().m_Frequency,
+			Queue.top().m_LeftChild,
+			Queue.top().m_RightChild,
+			NULL);
+		Queue.pop();
+		IDQueueElement *Right = new IDQueueElement(
+			Queue.top().m_ID,
+			Queue.top().m_Frequency,
+			Queue.top().m_LeftChild,
+			Queue.top().m_RightChild,
+			NULL);
+		Queue.pop();
+
+		//Create a new internal node with these two nodes as children and with probability equal to the sum of the two nodes' probabilities.
+		//Note (Parents pointers are initalised as NULL)
+		//Todo, rename this to something more appropriate. #define NotAnID = 'H' etc?
+		IDQueueElement Parent("NAN", (Left->m_Frequency +  Right->m_Frequency), Left, Right, NULL);
+		Parent.m_LeftChild = Left;
+		Parent.m_RightChild = Right;
+
+		//Add the new node to the queue.
+		Queue.push(Parent);
+	}
+
+	//The remaining node is the root node and the tree is complete.
+	IDQueueElement *RootNode = new IDQueueElement(
+		Queue.top().m_ID,
+		Queue.top().m_Frequency,
+		Queue.top().m_LeftChild,
+		Queue.top().m_RightChild,
+		NULL);
+	Queue.pop();
+
+	//Asign parent pointers
+	//AssignParentPointersToIDQueueElementTree(RootNode);
+
+	return RootNode;
+}
+
+HuffyManager::BitsUsedQueueElement* HuffyManager::ConstructHuffyBitsUsedTreeFromPriorityQueue(priority_queue<HuffyManager::BitsUsedQueueElement,
+	vector<HuffyManager::BitsUsedQueueElement>,HuffyManager::CompareBitsUsedElements> Queue)
+{
+	//Todo, verify that a Queue has more than 1 element present
+	if(Queue.size() < 2)
+	{
+		return NULL;
+	}
+	//While there is more than one node in the queue:
+	while(!Queue.size() > 1)
+	{
+		//Remove the two nodes of highest priority (lowest probability) from the queue
+		//Todo consBitsUseder splitting up this line, is there much of an overhead for Queue.Top() ?
+		BitsUsedQueueElement *Left = new BitsUsedQueueElement(
+			Queue.top().m_BitsUsed,
+			Queue.top().m_Frequency,
+			Queue.top().m_LeftChild,
+			Queue.top().m_RightChild,
+			NULL);
+		Queue.pop();
+		BitsUsedQueueElement *Right = new BitsUsedQueueElement(
+			Queue.top().m_BitsUsed,
+			Queue.top().m_Frequency,
+			Queue.top().m_LeftChild,
+			Queue.top().m_RightChild,
+			NULL);
+		Queue.pop();
+
+		//Create a new internal node with these two nodes as children and with probability equal to the sum of the two nodes' probabilities.
+		//Note (Parents pointers are initalised as NULL)
+		//Todo, is it ok to presume first arg as NULL?
+		BitsUsedQueueElement Parent(NULL, (Left->m_Frequency +  Right->m_Frequency), Left, Right, NULL);
+		Parent.m_LeftChild = Left;
+		Parent.m_RightChild = Right;
+
+		//Add the new node to the queue.
+		Queue.push(Parent);
+	}
+
+	//The remaining node is the root node and the tree is complete.
+	BitsUsedQueueElement *RootNode = new BitsUsedQueueElement(
+		Queue.top().m_BitsUsed,
+		Queue.top().m_Frequency,
+		Queue.top().m_LeftChild,
+		Queue.top().m_RightChild,
+		NULL);
+	Queue.pop();
+
+	//Asign parent pointers
+	//AssignParentPointersToBitsUsedQueueElementTree(RootNode);
+
+	return RootNode;
+}
+
+//Assign parent pointers to a huffy tree
+
 void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement* Parent)
+{
+	//Stop when a child is a leaf node
+	//Todo, wont work when a node has only one child. Will this ever happen?
+	if(Parent->m_LeftChild != NULL && Parent->m_RightChild != NULL)
+	{
+		Parent->m_LeftChild->m_Parent = Parent;
+		Parent->m_RightChild->m_Parent = Parent;
+		AssignParentPointersToTypeQueueElementTree(Parent->m_LeftChild);
+		AssignParentPointersToTypeQueueElementTree(Parent->m_RightChild);
+	}
+}
+
+void HuffyManager::AssignParentPointersToIDQueueElementTree(IDQueueElement* Parent)
 {
 	Parent->m_LeftChild->m_Parent = Parent;
 	Parent->m_RightChild->m_Parent = Parent;
@@ -122,15 +290,32 @@ void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement* 
 	//Todo, wont work when a node has only one child. Will this ever happen?
 	if(Parent->m_LeftChild != NULL && Parent->m_RightChild != NULL)
 	{
-		AssignParentPointersToTypeQueueElementTree(Parent->m_LeftChild);
-		AssignParentPointersToTypeQueueElementTree(Parent->m_RightChild);
+		AssignParentPointersToIDQueueElementTree(Parent->m_LeftChild);
+		AssignParentPointersToIDQueueElementTree(Parent->m_RightChild);
 	}
 }
 
-void HuffyManager::HuffyTypeModified(string ID, e_HuffyTypes e_Type)
+void HuffyManager::AssignParentPointersToBitsUsedQueueElementTree(BitsUsedQueueElement* Parent)
+{
+	Parent->m_LeftChild->m_Parent = Parent;
+	Parent->m_RightChild->m_Parent = Parent;
+
+	//Stop when a child is a leaf node
+	//Todo, wont work when a node has only one child. Will this ever happen?
+	if(Parent->m_LeftChild != NULL && Parent->m_RightChild != NULL)
+	{
+		AssignParentPointersToBitsUsedQueueElementTree(Parent->m_LeftChild);
+		AssignParentPointersToBitsUsedQueueElementTree(Parent->m_RightChild);
+	}
+}
+
+//Todo rename this
+//Type specific stuff
+
+void HuffyManager::HuffyTypeModified(e_HuffyTypes e_Type, string ID)
 {
 	IncrementIDFrequencyMapByType(e_Type, ID);
-	IncrementBitsUsedFrequencyMap(ID);
+	IncrementBitsUsedFrequencyMapByType(e_Type, ID);
 
 	//Check if map entry exists, if not init, else increment
 	if(UsedTypeFrequencyMap.find(e_Type) == UsedTypeFrequencyMap.end()) 
@@ -143,51 +328,40 @@ void HuffyManager::HuffyTypeModified(string ID, e_HuffyTypes e_Type)
 	}
 
 	//Todo, should reword this, Marked as needing to be sent etc
+	//SHould be marked as sendable, i.e. by sending its ID to the compressor, compressor will flush IDs when sent
 	AddHuffyIntByIDToCompressor(ID);
 
 }
 
-void HuffyManager::IncrementBitsUsedFrequencyMap(string ID)
+void HuffyManager::IncrementBitsUsedFrequencyMapByType(e_HuffyTypes e_Type, string ID)
 {
-	
+
 	int BitsUsed = 0;
 	const HuffyBaseType* TempBasePointer = HuffyPtrMap[ID];
 
 	//Todo, it;s probably a bad idea to use reinterpret_cast
-   try
-   {
-	   switch(HuffyPtrMap[ID]->GetType())
-	   {
-		   case e_HuffyInt:
-			   {
-				   const HuffyInt* HuffyIntPointer = reinterpret_cast<const HuffyInt*>(TempBasePointer) ;
-				   BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyIntPointer->GetValue_C());
-				   break;
-			   }
-		   case e_HuffyFloat:
-			   {
+	try
+	{
+		switch(e_Type)
+		{
+			case e_HuffyInt:
+				{
+					const HuffyInt* HuffyIntPointer = reinterpret_cast<const HuffyInt*>(TempBasePointer) ;
+					BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyIntPointer->GetValue_C());
+					break;
+				}
+			case e_HuffyFloat:
+				{
 					const HuffyFloat* HuffyFloatPointer = reinterpret_cast<const HuffyFloat*>(TempBasePointer) ;
 					//Todo overload this function
 					BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyFloatPointer->GetValue_C());
 					break;
-			   }
-		   case e_HuffyVec2D:
-				   //const HuffyVec2D* HuffyVec2DPointer = reinterpret_cast<const HuffyVec2D*>(TempBasePointer) ;
-				   //BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyVec2DPointer->GetValue_C());
-				   break;
-		   case e_HuffyVec3D:
-				   //const HuffyVec3D* HuffyVec3DPointer = reinterpret_cast<const HuffyVec3D*>(TempBasePointer) ;
-				   //BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyVec3DPointer->GetValue_C());
-				   break;
-		   case e_HuffyString:
-			   //const HuffyString* HuffyStringPointer = reinterpret_cast<const HuffyString*>(TempBasePointer) ;
-			   //BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyStringPointer->GetValue_C());
-			   break;
-		   case e_HuffyBool:
-			   //const HuffyBool* HuffyBoolPointer = reinterpret_cast<const HuffyBool*>(TempBasePointer) ;
-			   //BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyBoolPointer->GetValue_C());
-			   break;
-	   }
+				}
+			case e_HuffyBool:
+				//const HuffyBool* HuffyBoolPointer = reinterpret_cast<const HuffyBool*>(TempBasePointer) ;
+				//BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyBoolPointer->GetValue_C());
+				break;
+		}
 
 	}
     catch (const std::bad_cast& e)
@@ -242,40 +416,10 @@ void HuffyManager::IncrementIDFrequencyMapByType(HuffyManager::e_HuffyTypes Type
 				FloatIDFrequencyMap[IDToIncrement]++;
 			}
 			break;
-		case e_HuffyVec2D:
-			if(Vector2DIDFrequencyMap.find(IDToIncrement) == Vector2DIDFrequencyMap.end()) 
-			{
-				Vector2DIDFrequencyMap[IDToIncrement] = 0;
-			}
-			else 
-			{
-				Vector2DIDFrequencyMap[IDToIncrement]++;
-			}
-			break;
-		case e_HuffyVec3D:
-			if(Vector3DIDFrequencyMap.find(IDToIncrement) == Vector3DIDFrequencyMap.end()) 
-			{
-				Vector3DIDFrequencyMap[IDToIncrement] = 0;
-			}
-			else 
-			{
-				Vector3DIDFrequencyMap[IDToIncrement]++;
-			}
-			break;
-		case e_HuffyString:
-			if(StringIDFrequencyMap.find(IDToIncrement) == StringIDFrequencyMap.end()) 
-			{
-				StringIDFrequencyMap[IDToIncrement] = 0;
-			}
-			else 
-			{
-				StringIDFrequencyMap[IDToIncrement]++;
-			}
-			break;
 	}
 }
 
-//Todo, refactor to use a common base class between types
+//Todo rename this to something more appropriate
 void HuffyManager::RegisterHuffyTypeAsSendable(string m_HuffyID, const HuffyBaseType* SendableHuffyType)
 {
 	HuffyManager::HuffyPtrMap[m_HuffyID] = SendableHuffyType;

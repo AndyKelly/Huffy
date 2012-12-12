@@ -27,7 +27,7 @@ string IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyTypes TypeToUse)
 	//Todo fix bug where 0,0 results in an empty string
 	IncrementTypeSpecificCounterByTypeEnum(TypeToUse);
 	//MSVC issue, have to cast to a larger type to use the to_string() function as no overload for int exists
-	return(to_string(static_cast<long double>(TypeToUse)) + to_string(IntsCreated));
+	return(to_string(static_cast<long long>(TypeToUse)) + to_string(static_cast<long long>(IntsCreated)));
 }
 
 void IDGenerator::IncrementTypeSpecificCounterByTypeEnum(HuffyManager::e_HuffyTypes TypeToIncrement)
@@ -42,15 +42,6 @@ void IDGenerator::IncrementTypeSpecificCounterByTypeEnum(HuffyManager::e_HuffyTy
 			break;
 		case HuffyManager::e_HuffyFloat:
 			FloatsCreated++;
-			break;
-		case HuffyManager::e_HuffyVec2D:
-			Vector2DsCreated++;
-			break;
-		case HuffyManager::e_HuffyVec3D:
-			Vector3DsCreated++;
-			break;
-		case HuffyManager::e_HuffyString:
-			StringsCreated++;
 			break;
 	}
 		

@@ -6,6 +6,7 @@
 #include "OutputManager.h"
 #include "HuffyInt.h"
 #include "HuffyFloat.h"
+#include "HuffyManager.h"
 using namespace std;
 void UnitTestHuffyInt();
 void UnitTestHuffyFloat();
@@ -19,7 +20,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	UnitTestHuffyInt();
 	system("PAUSE");
 	UnitTestHuffyFloat();
-
+	HuffyManager::ConstructHuffyTrees();
 	return 0;
 }
 
