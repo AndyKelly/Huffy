@@ -4,6 +4,7 @@
 #include "HuffyFloat.h"
 #include <string>
 #include <list>
+#include <bitset>
 #include <map>
 //Todo, do we need includes in header and source?
 using namespace std;
@@ -37,8 +38,11 @@ void HuffyManager::ConstructHuffyTrees(void)
 	IDQueueElement* FloatIDTreeRootNode = ConstructHuffyIDTreeFromPriorityQueue(GetIDPriorityQueueByType(e_HuffyFloat));
 	IDQueueElement* BoolIDTreeRootNode = ConstructHuffyIDTreeFromPriorityQueue(GetIDPriorityQueueByType(e_HuffyBool));
 	BitsUsedQueueElement* BitsUsedTreeRootNode = ConstructHuffyBitsUsedTreeFromPriorityQueue(GetBitsUsedPriorityQueue());
-	//Verify correct init
-	//Leave pointers somewhere sensible
+
+	//todoVerify correct init
+
+	//Pass pointers to HuddyCompressor
+	HuffyCompressor::PassPointersToHuffyTreeRootNodes(TypeTreeRootNode,IntIDTreeRootNode,FloatIDTreeRootNode,BoolIDTreeRootNode,BitsUsedTreeRootNode);
 }
 
 //Construct priority queues
@@ -424,7 +428,7 @@ void HuffyManager::RegisterHuffyTypeAsSendable(string m_HuffyID, const HuffyBase
 	HuffyManager::HuffyPtrMap[m_HuffyID] = SendableHuffyType;
 }
 
-//Todo refactor for each type using templates?
+//Todo Rename
 void HuffyManager::AddHuffyIntByIDToCompressor(string ID)
 {
 	//To do, dynamic casts

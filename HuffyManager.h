@@ -2,7 +2,6 @@
 #include <string>
 #include "HuffyInt.h"
 #include "HuffyBaseType.h"
-#include "HuffyCompressor.h"
 #include <list>
 #include <vector>
 #include <map>
@@ -11,6 +10,7 @@
 class HuffyManager
 {
 public:
+	
 	enum e_HuffyTypes 
 	{
 		e_HuffyNonLeaf = NULL,
@@ -18,13 +18,6 @@ public:
 		e_HuffyFloat,
 		e_HuffyBool,
 	};
-
-		~HuffyManager(void);
-	static void HuffyTypeModified(e_HuffyTypes, std::string);
-	static void HuffyManager::RegisterHuffyTypeAsSendable(std::string, const HuffyBaseType *);
-	static void HuffyManager::ConstructHuffyTrees(void);
-private:
-	//Todo, can we refactor these three structs into one common data type?
 	struct TypeQueueElement
 	{
 		TypeQueueElement(e_HuffyTypes TypeValue,
@@ -88,6 +81,14 @@ private:
 		BitsUsedQueueElement* m_RightChild;
 		BitsUsedQueueElement* m_Parent;
 	};
+
+
+		~HuffyManager(void);
+	static void HuffyTypeModified(e_HuffyTypes, std::string);
+	static void HuffyManager::RegisterHuffyTypeAsSendable(std::string, const HuffyBaseType *);
+	static void HuffyManager::ConstructHuffyTrees(void);
+private:
+	//Todo, can we refactor these three structs into one common data type?
 
 	class CompareTypeElements 
 	{
