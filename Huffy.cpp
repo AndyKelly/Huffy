@@ -6,10 +6,12 @@
 #include "OutputManager.h"
 #include "HuffyInt.h"
 #include "HuffyFloat.h"
+#include "HuffyBool.h"
 #include "HuffyManager.h"
 using namespace std;
 void UnitTestHuffyInt();
 void UnitTestHuffyFloat();
+void UnitTestHuffyBool();
 int _tmain(int argc, _TCHAR* argv[])
 {
 	
@@ -20,7 +22,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	UnitTestHuffyInt();
 	system("PAUSE");
 	UnitTestHuffyFloat();
-	HuffyManager::ConstructHuffyTrees();
+	
+
+	 UnitTestHuffyBool();
+	 //HuffyManager::ConstructHuffyTrees();
 	return 0;
 }
 
@@ -56,7 +61,7 @@ void UnitTestHuffyInt()
 	HuffyIntToTest = HuffyIntToTest / 55;
 	ValueToTest = ValueToTest / 55;
 
-	if(HuffyIntToTest.GetValue() == ValueToTest)
+	if(HuffyIntToTest == ValueToTest)
 	{
 		cout << "\nTest Passed both values are equal\n";
 
@@ -117,7 +122,7 @@ void UnitTestHuffyFloat()
 	HuffyFloatToTest = HuffyFloatToTest / 55;
 	ValueToTest = ValueToTest / 55;
 
-	if(HuffyFloatToTest.GetValue() == ValueToTest)
+	if(HuffyFloatToTest == ValueToTest)
 	{
 		cout << "\nTest Passed both values are equal\n";
 
@@ -145,3 +150,32 @@ void UnitTestHuffyFloat()
 
 }
 
+void UnitTestHuffyBool()
+{
+	cout<< "\nCreating a Bool, set as true, and a Huffy bool set as true.\n";
+	bool Control = true;
+	HuffyBool HuffyBoolToTest(true, "HuffyTesty");
+	Control = false;
+	Control = Control;
+	HuffyBoolToTest = false;
+	HuffyBoolToTest = HuffyBoolToTest;
+
+	if(HuffyBoolToTest == false && HuffyBoolToTest != true)
+	{
+		HuffyBoolToTest = true;
+	}
+	if(Control == false && Control != true)
+	{
+		Control = true;
+	}
+
+	if(HuffyBoolToTest == Control)
+	{
+		cout << "\nTest passed, Huffy bools seem to be working correctly.\n";
+	}
+	else
+	{
+		cout << "\nTest failed, Huffy bools do not seem to be working correctly.\n";
+	}
+	system("PAUSE");
+}

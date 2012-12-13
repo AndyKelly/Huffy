@@ -6,6 +6,8 @@ class HuffyInt : HuffyBaseType
 {
 	
 private:
+	HuffyInt();
+	HuffyInt(int Value);
 	int m_Value;
 	bool m_Sendable;
 	std::string m_UniqueID;
@@ -15,8 +17,6 @@ private:
 	void UpdateHuffyManagaer(void);
 
 public:
-	HuffyInt();
-	HuffyInt(int Value);
 	HuffyInt(int Value, std::string UniqueID);
 	~HuffyInt(void);
 
@@ -39,12 +39,12 @@ public:
 	HuffyInt operator-=(const HuffyInt& other);
 	HuffyInt operator/=(const HuffyInt& other);
 	HuffyInt operator*=(const HuffyInt& other);
-	HuffyInt operator==(const HuffyInt& other);
-	HuffyInt operator>=(const HuffyInt& other);
-	HuffyInt operator<=(const HuffyInt& other);
-	HuffyInt operator!=(const HuffyInt& other);
-	HuffyInt operator>(const HuffyInt& other);
-	HuffyInt operator<(const HuffyInt& other);
+	bool operator==(const HuffyInt& other);
+	bool operator>=(const HuffyInt& other);
+	bool operator<=(const HuffyInt& other);
+	bool operator!=(const HuffyInt& other);
+	bool operator>(const HuffyInt& other);
+	bool operator<(const HuffyInt& other);
 
 	HuffyInt operator+(const int& other);
 	HuffyInt operator-(const int& other);
@@ -55,11 +55,11 @@ public:
 	HuffyInt operator-=(const int& other);
 	HuffyInt operator/=(const int& other);
 	HuffyInt operator*=(const int& other);
-	HuffyInt operator==(const int& other);
-	HuffyInt operator>=(const int& other);
-	HuffyInt operator<=(const int& other);
-	HuffyInt operator!=(const int& other);
-	HuffyInt operator>(const int& other);
-	HuffyInt operator<(const int& other);
+	bool operator==(const int& other);
+	bool operator>=(const int& other);
+	bool operator<=(const int& other);
+	bool operator!=(const int& other);
+	bool operator>(const int& other);
+	bool operator<(const int& other);
 };
 

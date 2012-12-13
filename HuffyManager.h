@@ -3,7 +3,6 @@
 #include "HuffyInt.h"
 #include "HuffyBaseType.h"
 #include "HuffyCompressor.h"
-#include "PriorityQueueUtility.h"
 #include <list>
 #include <vector>
 #include <map>
@@ -14,7 +13,7 @@ class HuffyManager
 public:
 	enum e_HuffyTypes 
 	{
-		e_HuffyNonLeaf= NULL,
+		e_HuffyNonLeaf = NULL,
 		e_HuffyInt,
 		e_HuffyFloat,
 		e_HuffyBool,

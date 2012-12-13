@@ -383,11 +383,10 @@ void HuffyManager::IncrementBitsUsedFrequencyMapByType(e_HuffyTypes e_Type, stri
 void HuffyManager::IncrementIDFrequencyMapByType(HuffyManager::e_HuffyTypes TypeToIncrement, string IDToIncrement)
 {
 	//Check if map entry exists, if not init, else increment
-	//Todo, similar logic here, bad code smell, fix it
 	switch (TypeToIncrement) 
 	{
 		case e_HuffyBool:
-			if(BoolIDFrequencyMap.find(IDToIncrement) == IntIDFrequencyMap.end()) 
+			if(BoolIDFrequencyMap.find(IDToIncrement) == BoolIDFrequencyMap.end()) 
 			{
 				BoolIDFrequencyMap[IDToIncrement] = 0;
 			}

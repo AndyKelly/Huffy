@@ -133,32 +133,32 @@ HuffyInt HuffyInt::operator*=(const HuffyInt& other)
 	return *this;
 }
 
-HuffyInt HuffyInt::operator==(const HuffyInt& other)
+bool HuffyInt::operator==(const HuffyInt& other)
 {
 	return m_Value == other.m_Value;
 }
 
-HuffyInt HuffyInt::operator>=(const HuffyInt& other)
+bool HuffyInt::operator>=(const HuffyInt& other)
 {
 	return m_Value >= other.m_Value;
 }
 
-HuffyInt HuffyInt::operator<=(const HuffyInt& other)
+bool HuffyInt::operator<=(const HuffyInt& other)
 {
 	return m_Value >= other.m_Value;
 }
 
-HuffyInt HuffyInt::operator!=(const HuffyInt& other)
+bool HuffyInt::operator!=(const HuffyInt& other)
 {
-	return m_Value >= other.m_Value;
+	return m_Value != other.m_Value;
 }
 
-HuffyInt HuffyInt::operator>(const HuffyInt& other)
+bool HuffyInt::operator>(const HuffyInt& other)
 {
 	return m_Value > other.m_Value;
 }
 
-HuffyInt HuffyInt::operator<(const HuffyInt& other)
+bool HuffyInt::operator<(const HuffyInt& other)
 {
 	return m_Value < other.m_Value;
 }
@@ -222,32 +222,32 @@ HuffyInt HuffyInt::operator*=(const int& other)
 	return *this;
 }
 
-HuffyInt HuffyInt::operator==(const int& other)
+bool HuffyInt::operator==(const int& other)
 {
 	return m_Value == other;
 }
 
-HuffyInt HuffyInt::operator>=(const int& other)
+bool HuffyInt::operator>=(const int& other)
 {
 	return m_Value >= other;
 }
 
-HuffyInt HuffyInt::operator<=(const int& other)
+bool HuffyInt::operator<=(const int& other)
 {
 	return m_Value >= other;
 }
 
-HuffyInt HuffyInt::operator!=(const int& other)
+bool HuffyInt::operator!=(const int& other)
 {
-	return m_Value >= other;
+	return m_Value != other;
 }
 
-HuffyInt HuffyInt::operator>(const int& other)
+bool HuffyInt::operator>(const int& other)
 {
 	return m_Value > other;
 }
 
-HuffyInt HuffyInt::operator<(const int& other)
+bool HuffyInt::operator<(const int& other)
 {
 	return m_Value < other;
 }

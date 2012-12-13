@@ -133,32 +133,32 @@ HuffyFloat HuffyFloat::operator*=(const HuffyFloat& other)
 	return *this;
 }
 
-HuffyFloat HuffyFloat::operator==(const HuffyFloat& other)
+bool HuffyFloat::operator==(const HuffyFloat& other)
 {
 	return m_Value == other.m_Value;
 }
 
-HuffyFloat HuffyFloat::operator>=(const HuffyFloat& other)
+bool HuffyFloat::operator>=(const HuffyFloat& other)
 {
 	return m_Value >= other.m_Value;
 }
 
-HuffyFloat HuffyFloat::operator<=(const HuffyFloat& other)
+bool HuffyFloat::operator<=(const HuffyFloat& other)
 {
 	return m_Value >= other.m_Value;
 }
 
-HuffyFloat HuffyFloat::operator!=(const HuffyFloat& other)
+bool HuffyFloat::operator!=(const HuffyFloat& other)
 {
-	return m_Value >= other.m_Value;
+	return m_Value != other.m_Value;
 }
 
-HuffyFloat HuffyFloat::operator>(const HuffyFloat& other)
+bool HuffyFloat::operator>(const HuffyFloat& other)
 {
 	return m_Value > other.m_Value;
 }
 
-HuffyFloat HuffyFloat::operator<(const HuffyFloat& other)
+bool HuffyFloat::operator<(const HuffyFloat& other)
 {
 	return m_Value < other.m_Value;
 }
@@ -222,32 +222,32 @@ HuffyFloat HuffyFloat::operator*=(const float& other)
 	return *this;
 }
 
-HuffyFloat HuffyFloat::operator==(const float& other)
+bool HuffyFloat::operator==(const float& other)
 {
 	return m_Value == other;
 }
 
-HuffyFloat HuffyFloat::operator>=(const float& other)
+bool HuffyFloat::operator>=(const float& other)
 {
 	return m_Value >= other;
 }
 
-HuffyFloat HuffyFloat::operator<=(const float& other)
+bool HuffyFloat::operator<=(const float& other)
 {
 	return m_Value >= other;
 }
 
-HuffyFloat HuffyFloat::operator!=(const float& other)
+bool HuffyFloat::operator!=(const float& other)
 {
-	return m_Value >= other;
+	return m_Value != other;
 }
 
-HuffyFloat HuffyFloat::operator>(const float& other)
+bool HuffyFloat::operator>(const float& other)
 {
 	return m_Value > other;
 }
 
-HuffyFloat HuffyFloat::operator<(const float& other)
+bool HuffyFloat::operator<(const float& other)
 {
 	return m_Value < other;
 }

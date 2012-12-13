@@ -45,13 +45,13 @@
     <ClInclude Include="OutputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PriorityQueueUtility.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HuffyBaseType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HuffyFloat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HuffyBool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -87,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HuffyFloat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HuffyBool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

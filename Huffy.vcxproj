@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HuffyBaseType.h" />
+    <ClInclude Include="HuffyBool.h" />
     <ClInclude Include="HuffyCompressor.h" />
     <ClInclude Include="HuffyFloat.h" />
     <ClInclude Include="HuffyInt.h" />
@@ -84,13 +85,13 @@
     <ClInclude Include="IDGenerator.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="OutputManager.h" />
-    <ClInclude Include="PriorityQueueUtility.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Huffy.cpp" />
     <ClCompile Include="HuffyBaseType.cpp" />
+    <ClCompile Include="HuffyBool.cpp" />
     <ClCompile Include="HuffyCompressor.cpp" />
     <ClCompile Include="HuffyFloat.cpp" />
     <ClCompile Include="HuffyInt.cpp" />
