@@ -21,7 +21,7 @@ HuffyBool::HuffyBool(bool Value, string UniqueID)
 	m_Sendable = true;
 	m_UniqueID = UniqueID;
 	m_HuffyID = IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool);
-	HuffyManager::RegisterHuffyTypeAsSendable(m_HuffyID, this);
+	HuffyManager::RegisterHuffyTypeObject(m_HuffyID, this);
 }
 
 HuffyBool::~HuffyBool(void)

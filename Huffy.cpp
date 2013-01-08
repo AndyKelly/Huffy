@@ -24,8 +24,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	UnitTestHuffyFloat();
 	
 
-	 UnitTestHuffyBool();
-	 //HuffyManager::ConstructHuffyTrees();
+	UnitTestHuffyBool();
+	HuffyManager::Initalise(true, "void", 123);
 	return 0;
 }
 

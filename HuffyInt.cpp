@@ -21,7 +21,7 @@ HuffyInt::HuffyInt(int Value, string UniqueID)
 	m_Sendable = true;
 	m_UniqueID = UniqueID;
 	m_HuffyID = IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt);
-	HuffyManager::RegisterHuffyTypeAsSendable(m_HuffyID, this);
+	HuffyManager::RegisterHuffyTypeObject(m_HuffyID, this);
 }
 
 HuffyInt::~HuffyInt(void)

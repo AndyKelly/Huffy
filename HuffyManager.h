@@ -82,13 +82,16 @@ public:
 		BitsUsedQueueElement* m_Parent;
 	};
 
+	
 
-		~HuffyManager(void);
+	static void Initalise(bool, std::string, int);
+	static void Adapt();
+	static void Update();
+
+	~HuffyManager(void);
 	static void HuffyTypeModified(e_HuffyTypes, std::string);
-	static void HuffyManager::RegisterHuffyTypeAsSendable(std::string, const HuffyBaseType *);
-	static void HuffyManager::ConstructHuffyTrees(void);
+	static void HuffyManager::RegisterHuffyTypeObject(std::string, const HuffyBaseType *);
 private:
-	//Todo, can we refactor these three structs into one common data type?
 
 	class CompareTypeElements 
 	{
@@ -118,17 +121,28 @@ private:
 		};
 	};
 
+	static bool m_Initalised;
+	static bool m_IsServer; 
+	
+	static void SendPriorityQueues();
+
+	
+	//Construct Huffman trees, send them to the compressor
+	static void HuffyManager::ConstructHuffyTrees(void);
+
+	//Map manipulation
 	static void IncrementIDFrequencyMapByType(e_HuffyTypes, std::string);
 	static void IncrementBitsUsedFrequencyMapByType(e_HuffyTypes, std::string);
-	static std::map<std::string, const HuffyBaseType* > HuffyPtrMap;
 
+	//Huffy types base class pointer map
+	static std::map<std::string, const HuffyBaseType* > HuffyPtrMap;
+	
 	//Frequency maps
-	//Todo consider using smaller types than long long?
 	static std::map<e_HuffyTypes, long long > UsedTypeFrequencyMap;
 	static std::map<std::string, long long > IntIDFrequencyMap;
 	static std::map<std::string, long long > FloatIDFrequencyMap;
 	static std::map<std::string, long long > BoolIDFrequencyMap;
-	static std::map<int, int> BitsUsedFrequencyMap;
+	static std::map<int, long long> BitsUsedFrequencyMap;
 
 	//PriorityQueue Constructors
 	static std::priority_queue<TypeQueueElement, std::vector<TypeQueueElement>,CompareTypeElements> HuffyManager::GetHuffyTypesPriorityQueue(void);
@@ -144,7 +158,7 @@ private:
 	static void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement*);
 	static void HuffyManager::AssignParentPointersToIDQueueElementTree(IDQueueElement*);
 	static void HuffyManager::AssignParentPointersToBitsUsedQueueElementTree(BitsUsedQueueElement*);
-
-	static void HuffyManager::AddHuffyIntByIDToCompressor(std::string);
+	
+	static void HuffyManager::AddToCompressorSendList(std::string);
 	HuffyManager(void);
 };

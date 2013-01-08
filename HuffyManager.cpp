@@ -10,24 +10,83 @@
 using namespace std;
 
 //Init static member variables
+bool HuffyManager::m_Initalised = false;
+bool HuffyManager::m_IsServer = false; 
 std::map<std::string, const HuffyBaseType* > HuffyManager::HuffyPtrMap;
 std::map<HuffyManager::e_HuffyTypes, long long > HuffyManager::UsedTypeFrequencyMap;
-std::map<int, int> HuffyManager::BitsUsedFrequencyMap;
+std::map<int, long long> HuffyManager::BitsUsedFrequencyMap;
 std::map<std::string, long long > HuffyManager::IntIDFrequencyMap;
 std::map<std::string, long long > HuffyManager::FloatIDFrequencyMap;
 std::map<std::string, long long > HuffyManager::BoolIDFrequencyMap;
 
 //Todo should init all values of map to 1
 
-//Todo, should be a singleton
 HuffyManager::HuffyManager(void)
 {
 }
 
-
 HuffyManager::~HuffyManager(void)
 {
 	//Todo correctly delete huffy trees
+}
+
+void HuffyManager::Initalise(bool IsServer, string ClientAddress, int PortNumber)
+{
+	m_Initalised = true;
+	ConstructHuffyTrees();
+	if(IsServer)
+	{
+		m_IsServer = true;
+		HuffyCompressor::Init(ClientAddress,PortNumber);
+		SendPriorityQueues();
+	}
+	else
+	{
+		m_IsServer = false;
+		//Todo
+		//HuffyCompressor::ListenOn(PortNumber);
+	}
+}
+
+void HuffyManager::Update()
+{
+	if(m_Initalised)
+	{
+		if(m_IsServer)
+		{
+			//Send update to client
+			HuffyCompressor::SendUpdate();
+
+			//std::map<std::string, const HuffyBaseType* >::iterator itr;
+			//for(itr = HuffyPtrMap.begin(); itr != HuffyPtrMap.end(); itr++)
+			//{
+			//	HuffyCompressor::CompressHuffyBaseType(itr->second);
+			//}
+		}
+		else
+		{
+			//Have we recieved an update?
+			//HuffyCompressor::AwaitAndApplyUpdate();
+			//If so apply it
+		}
+	}
+}
+
+void HuffyManager::SendPriorityQueues()
+{
+	//HuffyCompressor::SendPriorityQueuesUpdate(GetHuffyTypesPriorityQueue(),
+	//GetIDPriorityQueueByType(e_HuffyInt),
+	//GetIDPriorityQueueByType(e_HuffyFloat),
+	//GetIDPriorityQueueByType(e_HuffyBool),
+	//GetBitsUsedPriorityQueue());
+}
+
+void HuffyManager::Adapt()
+{
+	//Create new Huffy tree's
+	ConstructHuffyTrees();
+	//Update the client
+	SendPriorityQueues();
 }
 
 void HuffyManager::ConstructHuffyTrees(void)
@@ -39,9 +98,9 @@ void HuffyManager::ConstructHuffyTrees(void)
 	IDQueueElement* BoolIDTreeRootNode = ConstructHuffyIDTreeFromPriorityQueue(GetIDPriorityQueueByType(e_HuffyBool));
 	BitsUsedQueueElement* BitsUsedTreeRootNode = ConstructHuffyBitsUsedTreeFromPriorityQueue(GetBitsUsedPriorityQueue());
 
-	//todoVerify correct init
+	//Todo Verify correct init
 
-	//Pass pointers to HuddyCompressor
+	//Pass pointers to HuffyCompressor
 	HuffyCompressor::PassPointersToHuffyTreeRootNodes(TypeTreeRootNode,IntIDTreeRootNode,FloatIDTreeRootNode,BoolIDTreeRootNode,BitsUsedTreeRootNode);
 }
 
@@ -97,7 +156,7 @@ priority_queue<HuffyManager::IDQueueElement, vector<HuffyManager::IDQueueElement
 priority_queue<HuffyManager::BitsUsedQueueElement, vector<HuffyManager::BitsUsedQueueElement>,HuffyManager::CompareBitsUsedElements> HuffyManager::GetBitsUsedPriorityQueue()
 {
 	priority_queue<BitsUsedQueueElement, vector<BitsUsedQueueElement>,CompareBitsUsedElements> BitsUsedPQ;
-	std::map<int, int>::iterator itr;
+	std::map<int, long long>::iterator itr;
 
 	for(itr = BitsUsedFrequencyMap.begin(); itr != BitsUsedFrequencyMap.end(); itr++)
 	{
@@ -313,8 +372,7 @@ void HuffyManager::AssignParentPointersToBitsUsedQueueElementTree(BitsUsedQueueE
 	}
 }
 
-//Todo rename this
-//Type specific stuff
+//Map manipulation
 
 void HuffyManager::HuffyTypeModified(e_HuffyTypes e_Type, string ID)
 {
@@ -331,10 +389,8 @@ void HuffyManager::HuffyTypeModified(e_HuffyTypes e_Type, string ID)
 		UsedTypeFrequencyMap[e_Type]++;
 	}
 
-	//Todo, should reword this, Marked as needing to be sent etc
-	//SHould be marked as sendable, i.e. by sending its ID to the compressor, compressor will flush IDs when sent
-	AddHuffyIntByIDToCompressor(ID);
-
+	//Ensure the modified object is sent over the network
+	HuffyCompressor::AddToSendList(ID);
 }
 
 void HuffyManager::IncrementBitsUsedFrequencyMapByType(e_HuffyTypes e_Type, string ID)
@@ -422,16 +478,7 @@ void HuffyManager::IncrementIDFrequencyMapByType(HuffyManager::e_HuffyTypes Type
 	}
 }
 
-//Todo rename this to something more appropriate
-void HuffyManager::RegisterHuffyTypeAsSendable(string m_HuffyID, const HuffyBaseType* SendableHuffyType)
+void HuffyManager::RegisterHuffyTypeObject(string m_HuffyID, const HuffyBaseType* SendableHuffyTypeObject)
 {
-	HuffyManager::HuffyPtrMap[m_HuffyID] = SendableHuffyType;
-}
-
-//Todo Rename
-void HuffyManager::AddHuffyIntByIDToCompressor(string ID)
-{
-	//To do, dynamic casts
-	//Figure out types here
-	//HuffyCompressor::AddIntToOutStream(HuffyManager::HuffyPtrMap[ID]->GetValue_C());
+	HuffyManager::HuffyPtrMap[m_HuffyID] = SendableHuffyTypeObject;
 }
