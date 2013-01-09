@@ -11,10 +11,11 @@
 	int HuffyCompressor::CurrentReadBit = 0;
 	int HuffyCompressor::CurrentReadByte = 0;
 	unsigned char HuffyCompressor::Buffer[BufferLimit];
+	//Todo Find a way to zero the first element
+
 	bool HuffyCompressor::m_InitalisedAsServer = false;
 	std::string HuffyCompressor::m_ClientAddress = "NULL";
 	int HuffyCompressor::m_PortNum = NULL;
-	//Todo Find a way to zero the first element
 
 	HuffyManager::TypeQueueElement* HuffyCompressor::m_TypeTreeRootNode = NULL;
 	HuffyManager::IDQueueElement* HuffyCompressor::m_IntIDTreeRootNode = NULL;
@@ -22,7 +23,6 @@
 	HuffyManager::IDQueueElement* HuffyCompressor::m_BoolIDTreeRootNode = NULL;
 	HuffyManager::BitsUsedQueueElement* HuffyCompressor::m_BitsUsedTreeRootNode = NULL;
 
-//Todo should be singleton
 HuffyCompressor::HuffyCompressor(void)
 {
 }

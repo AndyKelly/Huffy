@@ -6,8 +6,6 @@ class HuffyBool : HuffyBaseType
 {
 	
 private:
-	HuffyBool();
-	HuffyBool(bool Value);
 	bool m_Value;
 	bool m_Sendable;
 	std::string m_UniqueID;
@@ -17,6 +15,8 @@ private:
 	void UpdateHuffyManagaer(void);
 
 public:
+	HuffyBool();
+	HuffyBool(bool Value);
 	HuffyBool(bool Value, std::string UniqueID);
 	~HuffyBool(void);
 

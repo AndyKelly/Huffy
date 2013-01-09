@@ -6,8 +6,6 @@ class HuffyFloat : HuffyBaseType
 {
 	
 private:
-	HuffyFloat();
-	HuffyFloat(float Value);
 	float m_Value;
 	bool m_Sendable;
 	std::string m_UniqueID;
@@ -16,7 +14,9 @@ private:
 	//Member functions
 	void UpdateHuffyManagaer(void);
 
-public:
+public:	
+	HuffyFloat();
+	HuffyFloat(float Value);
 	HuffyFloat(float Value, std::string UniqueID);
 	~HuffyFloat(void);
 

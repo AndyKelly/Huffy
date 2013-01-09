@@ -2,180 +2,142 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <cstdlib>
 #include "InputManager.h"
 #include "OutputManager.h"
+#include "IDGenerator.h"
 #include "HuffyInt.h"
 #include "HuffyFloat.h"
 #include "HuffyBool.h"
 #include "HuffyManager.h"
 using namespace std;
+
 void UnitTestHuffyInt();
 void UnitTestHuffyFloat();
 void UnitTestHuffyBool();
+void UnitTest();
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	
 	OutputManager Output;
 	Output.PrintTitle();
 
-	cout << "Running unit test of Huffy Int type.";
-	UnitTestHuffyInt();
+	cout << "Running unit test's.";
+	UnitTest();
+	cout << "\nExiting\n";
 	system("PAUSE");
-	UnitTestHuffyFloat();
-	
-
-	UnitTestHuffyBool();
-	HuffyManager::Initalise(true, "void", 123);
 	return 0;
 }
 
-void UnitTestHuffyInt()
+void UnitTest()
 {
-	cout << "\nBegining test, please enter an int value\n";
 	InputManager Input;
 	OutputManager Output;
-	int ValueToTest = Input.GetIntFromUser();
-	HuffyInt HuffyIntToTest(ValueToTest, "TestINt");
+	///Am I a client or a server?
+	cout << "Is this instance a server? y/n";
+	bool Server = Input.GetYesOrNoFromUser();
 
-	cout << "\nCreated an int with the value: \n";
-	Output.PrintInt(HuffyIntToTest.GetValue());
-	cout << "\n Running unit tests \n";
-	system("PAUSE");
+	if(Server)
+	{		
+		//Get address
+		cout << "\nOk, setting up a server, please enter an address to send to: \n";
+		std::string IPAddress =  Input.GetStringFromUser(); 
+		cout << "\nPlease enter a port to send to, between 1024 & 65535: \n";
+		int PortNum = Input.GetPortNumFromUser();
 
+		//Create a few huffy types
+		HuffyInt FirstInt(rand() % 100, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
+		HuffyInt SecondInt(rand() % 100, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
+		HuffyInt ThirdInt(rand() % 100, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
 
-	HuffyIntToTest++;
-	ValueToTest++;
-	HuffyIntToTest--;
-	ValueToTest--;
-	HuffyIntToTest += 40;
-	ValueToTest += 40;
-	HuffyIntToTest -= 80;
-	ValueToTest -= 80;
-	HuffyIntToTest *= 4;
-	ValueToTest *= 4;
-	HuffyIntToTest /= 4;
-	ValueToTest /= 4;
+		HuffyFloat FirstFloat(float(rand() % 100), IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
+		HuffyFloat SecondFloat(float(rand() % 100), IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
+		HuffyFloat ThirdFloat(float(rand() % 100), IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
 
-	HuffyIntToTest = HuffyIntToTest * 55;
-	ValueToTest = ValueToTest * 55;
-	HuffyIntToTest = HuffyIntToTest / 55;
-	ValueToTest = ValueToTest / 55;
+		HuffyBool FirstBool(true, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
+		HuffyBool SecondBool(false, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
+		HuffyBool ThirdBool(true, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
+		
+		//Calculate sum of types
+		float sum = 0;
+		sum += float(FirstInt.GetValue());
+		sum += float(SecondInt.GetValue());
+		sum += float(ThirdInt.GetValue());
+		sum += float(FirstFloat.GetValue());
+		sum += float(SecondFloat.GetValue());
+		sum += float(ThirdFloat.GetValue());
 
-	if(HuffyIntToTest == ValueToTest)
-	{
-		cout << "\nTest Passed both values are equal\n";
-
-		if(HuffyIntToTest.isBeingSent())
+		if(FirstBool.GetValue())
 		{
-			cout << "\nHuffy int is still being sent\n";
+			sum++;
 		}
-		else 
+		if(SecondBool.GetValue())
 		{
-			cout << "\nHuffy int is not being sent\n";
+			sum++;
+		}
+		if(ThirdBool.GetValue())
+		{
+			sum++;
 		}
 
-		cout << "\nHuffy Type value is:\n";
-		Output.PrintInt(HuffyIntToTest.GetType());
+		//Send an update
+		HuffyManager::Initalise(Server, IPAddress, PortNum);
+		HuffyManager::Update();
+
+		cout << "Sum of all sent types is:\n";
+		Output.PrintFloat(sum);
+
 	}
 	else
 	{
-		cout << "\nTest failed\n";
-		cout << "\nInt value is:\n";
-		Output.PrintInt(ValueToTest);
-		cout << "\nHuffyInt value is:\n";
-		Output.PrintInt(HuffyIntToTest.GetValue());
-	}
-	system("PAUSE");
+		//get port 
+		cout << "Ok, setting up a client, please enter a port to listen on, between 1024 & 65535";
+		int PortNum = Input.GetPortNumFromUser();
 
-}
+		//Create a few huffy types
+		//Create a few huffy types
+		HuffyInt FirstInt(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
+		HuffyInt SecondInt(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
+		HuffyInt ThirdInt(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
 
+		HuffyFloat FirstFloat(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
+		HuffyFloat SecondFloat(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
+		HuffyFloat ThirdFloat(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
 
-void UnitTestHuffyFloat()
-{
-	cout << "\nBegining test, please enter an Float value\n";
-	InputManager Input;
-	OutputManager Output;
-	float ValueToTest = Input.GetFloatFromUser();
-	HuffyFloat HuffyFloatToTest(ValueToTest, "TestFloat");
+		HuffyBool FirstBool(false, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
+		HuffyBool SecondBool(false, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
+		HuffyBool ThirdBool(false, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
+		
+		//Calculate sum of types
+		float sum = 0;
+		sum += float(FirstInt.GetValue());
+		sum += float(SecondInt.GetValue());
+		sum += float(ThirdInt.GetValue());
+		sum += float(FirstFloat.GetValue());
+		sum += float(SecondFloat.GetValue());
+		sum += float(ThirdFloat.GetValue());
 
-	cout << "\nCreated a Float with the value: \n";
-	Output.PrintFloat(HuffyFloatToTest.GetValue());
-	cout << "\n Running unit tests \n";
-	system("PAUSE");
-
-
-	HuffyFloatToTest++;
-	ValueToTest++;
-	HuffyFloatToTest--;
-	ValueToTest--;
-	HuffyFloatToTest += 40.4;
-	ValueToTest += 40.4;
-	HuffyFloatToTest -= 80;
-	ValueToTest -= 80;
-	HuffyFloatToTest *= 4;
-	ValueToTest *= 4;
-	HuffyFloatToTest /= 4;
-	ValueToTest /= 4;
-
-	HuffyFloatToTest = HuffyFloatToTest * 55;
-	ValueToTest = ValueToTest * 55;
-	HuffyFloatToTest = HuffyFloatToTest / 55;
-	ValueToTest = ValueToTest / 55;
-
-	if(HuffyFloatToTest == ValueToTest)
-	{
-		cout << "\nTest Passed both values are equal\n";
-
-		if(HuffyFloatToTest.isBeingSent())
+		if(FirstBool.GetValue())
 		{
-			cout << "\nHuffy Float is still being sent\n";
+			sum++;
 		}
-		else 
+		if(SecondBool.GetValue())
 		{
-			cout << "\nHuffy Float is not being sent\n";
+			sum++;
+		}
+		if(ThirdBool.GetValue())
+		{
+			sum++;
 		}
 
-		cout << "\nHuffy Type value is:\n";
-		Output.PrintInt(HuffyFloatToTest.GetType());
-	}
-	else
-	{
-		cout << "\nTest failed\n";
-		cout << "\nFloat value is:\n";
-		Output.PrintFloat(ValueToTest);
-		cout << "\nHuffyFloat value is:\n";
-		Output.PrintFloat(HuffyFloatToTest.GetValue());
-	}
-	system("PAUSE");
+		//Await an update
+		HuffyManager::Initalise(Server, "", PortNum);
+		HuffyManager::Update();
 
-}
-
-void UnitTestHuffyBool()
-{
-	cout<< "\nCreating a Bool, set as true, and a Huffy bool set as true.\n";
-	bool Control = true;
-	HuffyBool HuffyBoolToTest(true, "HuffyTesty");
-	Control = false;
-	Control = Control;
-	HuffyBoolToTest = false;
-	HuffyBoolToTest = HuffyBoolToTest;
-
-	if(HuffyBoolToTest == false && HuffyBoolToTest != true)
-	{
-		HuffyBoolToTest = true;
-	}
-	if(Control == false && Control != true)
-	{
-		Control = true;
+		//Output sum of types
+		cout << "Sum of all sent types is:\n";
+		Output.PrintFloat(sum);
 	}
 
-	if(HuffyBoolToTest == Control)
-	{
-		cout << "\nTest passed, Huffy bools seem to be working correctly.\n";
-	}
-	else
-	{
-		cout << "\nTest failed, Huffy bools do not seem to be working correctly.\n";
-	}
-	system("PAUSE");
 }

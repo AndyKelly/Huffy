@@ -20,6 +20,7 @@ HuffyFloat::HuffyFloat(float Value, string UniqueID)
 	m_Value = Value;
 	m_Sendable = true;
 	m_UniqueID = UniqueID;
+	//Todo, sort out id's
 	m_HuffyID = IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat);
 	HuffyManager::RegisterHuffyTypeObject(m_HuffyID, this);
 }
@@ -27,6 +28,7 @@ HuffyFloat::HuffyFloat(float Value, string UniqueID)
 HuffyFloat::~HuffyFloat(void)
 {
 	//Todo Alert HuffyManager that this object is destroyed
+	//HuffyManager::RemoveThisInstance(m_UniqueID);
 }
 
 int HuffyFloat::GetType(void) const

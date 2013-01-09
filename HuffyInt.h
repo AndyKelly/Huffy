@@ -6,8 +6,6 @@ class HuffyInt : HuffyBaseType
 {
 	
 private:
-	HuffyInt();
-	HuffyInt(int Value);
 	int m_Value;
 	bool m_Sendable;
 	std::string m_UniqueID;
@@ -17,6 +15,8 @@ private:
 	void UpdateHuffyManagaer(void);
 
 public:
+	HuffyInt();
+	HuffyInt(int Value);
 	HuffyInt(int Value, std::string UniqueID);
 	~HuffyInt(void);
 

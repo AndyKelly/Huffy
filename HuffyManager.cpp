@@ -43,7 +43,7 @@ void HuffyManager::Initalise(bool IsServer, string ClientAddress, int PortNumber
 	else
 	{
 		m_IsServer = false;
-		//Todo
+		//Todo in a loop?
 		//HuffyCompressor::ListenOn(PortNumber);
 	}
 }
@@ -65,8 +65,7 @@ void HuffyManager::Update()
 		}
 		else
 		{
-			//Have we recieved an update?
-			//HuffyCompressor::AwaitAndApplyUpdate();
+			//Apply recieved updates
 			//If so apply it
 		}
 	}

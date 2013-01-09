@@ -11,9 +11,8 @@ public:
 	InputManager(void);
 	~InputManager(void);
 	string GetStringFromUser();
-	int GetIntFromUser();
-	float GetFloatFromUser();
-	char GetCharFromUser();//YAGNIS
+	int GetPortNumFromUser();
+	bool GetYesOrNoFromUser();
 	void PressAnyKeyToContine();
 };
 
