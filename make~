@@ -1,0 +1,23 @@
+CC=g++
+CFLAGS=-c -Wall
+LDFLAGS=
+SOURCES=HuffyBaseType.cpp HuffyFloat.h Huffy.vcxproj.filters     
+HuffyBaseType.h      HuffyInt.cpp      IDGenerator.cpp           
+HuffyBool.cpp        HuffyInt.h        IDGenerator.h             stdafx.cpp
+HuffyBool.h          HuffyManager.cpp  InputManager.cpp          stdafx.h
+HuffyCompressor.cpp  HuffyManager.h    InputManager.h            targetver.h
+HuffyCompressor.h    HuffySender.cpp   OutputManager.cpp
+Huffy.cpp            HuffySender.h     OutputManager.h
+HuffyFloat.cpp       PriorityQueueUtility.cpp
+
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=hello
+
+all: $(SOURCES) $(EXECUTABLE)
+	
+$(EXECUTABLE): $(OBJECTS) 
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
