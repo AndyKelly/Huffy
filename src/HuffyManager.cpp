@@ -1,11 +1,11 @@
 #include "HuffyManager.h"
 #include "HuffyCompressor.h"
 #include "HuffyFloat.h"
+#include "HuffyBool.h"
 #include <string>
 #include <list>
 #include <bitset>
 #include <map>
-//Todo, do we need includes in header and source?
 using namespace std;
 
 //Init static member variables
@@ -18,15 +18,12 @@ std::map<std::string, long long > HuffyManager::IntIDFrequencyMap;
 std::map<std::string, long long > HuffyManager::FloatIDFrequencyMap;
 std::map<std::string, long long > HuffyManager::BoolIDFrequencyMap;
 
-//Todo should init all values of map to 1
-
 HuffyManager::HuffyManager(void)
 {
 }
 
 HuffyManager::~HuffyManager(void)
 {
-	//Todo correctly delete huffy trees
 }
 
 void HuffyManager::Initalise(bool IsServer, string ClientAddress, int PortNumber)
@@ -72,11 +69,11 @@ void HuffyManager::Update()
 
 void HuffyManager::SendPriorityQueues()
 {
-	//HuffyCompressor::SendPriorityQueuesUpdate(GetHuffyTypesPriorityQueue(),
-	//GetIDPriorityQueueByType(e_HuffyInt),
-	//GetIDPriorityQueueByType(e_HuffyFloat),
-	//GetIDPriorityQueueByType(e_HuffyBool),
-	//GetBitsUsedPriorityQueue());
+	HuffyCompressor::SendPriorityQueuesUpdate(GetHuffyTypesPriorityQueue(),
+	GetIDPriorityQueueByType(e_HuffyInt),
+	GetIDPriorityQueueByType(e_HuffyFloat),
+	GetIDPriorityQueueByType(e_HuffyBool),
+	GetBitsUsedPriorityQueue());
 }
 
 void HuffyManager::Adapt()
@@ -89,14 +86,11 @@ void HuffyManager::Adapt()
 
 void HuffyManager::ConstructHuffyTrees(void)
 {
-	//Todo impliment
 	TypeQueueElement* TypeTreeRootNode = ConstructHuffyTypeTreeFromPriorityQueue(GetHuffyTypesPriorityQueue());
 	IDQueueElement* IntIDTreeRootNode = ConstructHuffyIDTreeFromPriorityQueue(GetIDPriorityQueueByType(e_HuffyInt));
 	IDQueueElement* FloatIDTreeRootNode = ConstructHuffyIDTreeFromPriorityQueue(GetIDPriorityQueueByType(e_HuffyFloat));
 	IDQueueElement* BoolIDTreeRootNode = ConstructHuffyIDTreeFromPriorityQueue(GetIDPriorityQueueByType(e_HuffyBool));
 	BitsUsedQueueElement* BitsUsedTreeRootNode = ConstructHuffyBitsUsedTreeFromPriorityQueue(GetBitsUsedPriorityQueue());
-
-	//Todo Verify correct init
 
 	//Pass pointers to HuffyCompressor
 	HuffyCompressor::PassPointersToHuffyTreeRootNodes(TypeTreeRootNode,IntIDTreeRootNode,FloatIDTreeRootNode,BoolIDTreeRootNode,BitsUsedTreeRootNode);
@@ -131,6 +125,7 @@ priority_queue<HuffyManager::IDQueueElement, vector<HuffyManager::IDQueueElement
 			{
 				IDPQ.push(IDQueueElement(itr->first, itr->second, NULL, NULL, NULL));
 			}
+			break;
 		}
 		case e_HuffyFloat:
 		{
@@ -138,6 +133,7 @@ priority_queue<HuffyManager::IDQueueElement, vector<HuffyManager::IDQueueElement
 			{
 				IDPQ.push(IDQueueElement(itr->first, itr->second, NULL, NULL, NULL));
 			}
+			break;
 		}
 		case e_HuffyBool:
 		{
@@ -145,7 +141,13 @@ priority_queue<HuffyManager::IDQueueElement, vector<HuffyManager::IDQueueElement
 			{
 				IDPQ.push(IDQueueElement(itr->first, itr->second, NULL, NULL, NULL));
 			}
+			break;
 		}
+		default:
+		{
+			break;
+		}
+
 	}
 
 	return IDPQ;
@@ -169,8 +171,7 @@ priority_queue<HuffyManager::BitsUsedQueueElement, vector<HuffyManager::BitsUsed
 HuffyManager::TypeQueueElement* HuffyManager::ConstructHuffyTypeTreeFromPriorityQueue(priority_queue<HuffyManager::TypeQueueElement,
 	vector<HuffyManager::TypeQueueElement>,HuffyManager::CompareTypeElements> Queue)
 {
-	//Todo, verify that a Queue has more than 1 element present
-	if(Queue.size() < 2)
+	if(Queue.size() <= 1)
 	{
 		return NULL;
 	}
@@ -178,7 +179,6 @@ HuffyManager::TypeQueueElement* HuffyManager::ConstructHuffyTypeTreeFromPriority
 	while(!Queue.size() > 1)
 	{
 		//Remove the two nodes of highest priority (lowest probability) from the queue
-		//Todo consider splitting up this line, is there much of an overhead for Queue.Top() ?
 		TypeQueueElement *Left = new TypeQueueElement(
 			Queue.top().m_TypeValue,
 			Queue.top().m_Frequency,
@@ -222,8 +222,7 @@ HuffyManager::TypeQueueElement* HuffyManager::ConstructHuffyTypeTreeFromPriority
 HuffyManager::IDQueueElement* HuffyManager::ConstructHuffyIDTreeFromPriorityQueue(priority_queue<HuffyManager::IDQueueElement,
 	vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> Queue)
 {
-	//Todo, verify that a Queue has more than 1 element present
-	if(Queue.size() < 2)
+	if(Queue.size() <= 1)
 	{
 		return NULL;
 	}
@@ -231,7 +230,6 @@ HuffyManager::IDQueueElement* HuffyManager::ConstructHuffyIDTreeFromPriorityQueu
 	while(!Queue.size() > 1)
 	{
 		//Remove the two nodes of highest priority (lowest probability) from the queue
-		//Todo consider splitting up this line, is there much of an overhead for Queue.Top() ?
 		IDQueueElement *Left = new IDQueueElement(
 			Queue.top().m_ID,
 			Queue.top().m_Frequency,
@@ -249,8 +247,7 @@ HuffyManager::IDQueueElement* HuffyManager::ConstructHuffyIDTreeFromPriorityQueu
 
 		//Create a new internal node with these two nodes as children and with probability equal to the sum of the two nodes' probabilities.
 		//Note (Parents pointers are initalised as NULL)
-		//Todo, rename this to something more appropriate. #define NotAnID = 'H' etc?
-		IDQueueElement Parent("NAN", (Left->m_Frequency +  Right->m_Frequency), Left, Right, NULL);
+		IDQueueElement Parent(NULL, (Left->m_Frequency +  Right->m_Frequency), Left, Right, NULL);
 		Parent.m_LeftChild = Left;
 		Parent.m_RightChild = Right;
 
@@ -268,7 +265,7 @@ HuffyManager::IDQueueElement* HuffyManager::ConstructHuffyIDTreeFromPriorityQueu
 	Queue.pop();
 
 	//Asign parent pointers
-	//AssignParentPointersToIDQueueElementTree(RootNode);
+	AssignParentPointersToIDQueueElementTree(RootNode);
 
 	return RootNode;
 }
@@ -276,8 +273,7 @@ HuffyManager::IDQueueElement* HuffyManager::ConstructHuffyIDTreeFromPriorityQueu
 HuffyManager::BitsUsedQueueElement* HuffyManager::ConstructHuffyBitsUsedTreeFromPriorityQueue(priority_queue<HuffyManager::BitsUsedQueueElement,
 	vector<HuffyManager::BitsUsedQueueElement>,HuffyManager::CompareBitsUsedElements> Queue)
 {
-	//Todo, verify that a Queue has more than 1 element present
-	if(Queue.size() < 2)
+	if(Queue.size() <= 1)
 	{
 		return NULL;
 	}
@@ -285,7 +281,6 @@ HuffyManager::BitsUsedQueueElement* HuffyManager::ConstructHuffyBitsUsedTreeFrom
 	while(!Queue.size() > 1)
 	{
 		//Remove the two nodes of highest priority (lowest probability) from the queue
-		//Todo consBitsUseder splitting up this line, is there much of an overhead for Queue.Top() ?
 		BitsUsedQueueElement *Left = new BitsUsedQueueElement(
 			Queue.top().m_BitsUsed,
 			Queue.top().m_Frequency,
@@ -303,7 +298,6 @@ HuffyManager::BitsUsedQueueElement* HuffyManager::ConstructHuffyBitsUsedTreeFrom
 
 		//Create a new internal node with these two nodes as children and with probability equal to the sum of the two nodes' probabilities.
 		//Note (Parents pointers are initalised as NULL)
-		//Todo, is it ok to presume first arg as NULL?
 		BitsUsedQueueElement Parent(NULL, (Left->m_Frequency +  Right->m_Frequency), Left, Right, NULL);
 		Parent.m_LeftChild = Left;
 		Parent.m_RightChild = Right;
@@ -322,7 +316,7 @@ HuffyManager::BitsUsedQueueElement* HuffyManager::ConstructHuffyBitsUsedTreeFrom
 	Queue.pop();
 
 	//Asign parent pointers
-	//AssignParentPointersToBitsUsedQueueElementTree(RootNode);
+	AssignParentPointersToBitsUsedQueueElementTree(RootNode);
 
 	return RootNode;
 }
@@ -332,7 +326,6 @@ HuffyManager::BitsUsedQueueElement* HuffyManager::ConstructHuffyBitsUsedTreeFrom
 void HuffyManager::AssignParentPointersToTypeQueueElementTree(TypeQueueElement* Parent)
 {
 	//Stop when a child is a leaf node
-	//Todo, wont work when a node has only one child. Will this ever happen?
 	if(Parent->m_LeftChild != NULL && Parent->m_RightChild != NULL)
 	{
 		Parent->m_LeftChild->m_Parent = Parent;
@@ -348,7 +341,6 @@ void HuffyManager::AssignParentPointersToIDQueueElementTree(IDQueueElement* Pare
 	Parent->m_RightChild->m_Parent = Parent;
 
 	//Stop when a child is a leaf node
-	//Todo, wont work when a node has only one child. Will this ever happen?
 	if(Parent->m_LeftChild != NULL && Parent->m_RightChild != NULL)
 	{
 		AssignParentPointersToIDQueueElementTree(Parent->m_LeftChild);
@@ -362,7 +354,6 @@ void HuffyManager::AssignParentPointersToBitsUsedQueueElementTree(BitsUsedQueueE
 	Parent->m_RightChild->m_Parent = Parent;
 
 	//Stop when a child is a leaf node
-	//Todo, wont work when a node has only one child. Will this ever happen?
 	if(Parent->m_LeftChild != NULL && Parent->m_RightChild != NULL)
 	{
 		AssignParentPointersToBitsUsedQueueElementTree(Parent->m_LeftChild);
@@ -397,28 +388,28 @@ void HuffyManager::IncrementBitsUsedFrequencyMapByType(e_HuffyTypes e_Type, stri
 	int BitsUsed = 0;
 	const HuffyBaseType* TempBasePointer = HuffyPtrMap[ID];
 
-	//Todo, it;s probably a bad idea to use reinterpret_cast
 	try
 	{
 		switch(e_Type)
 		{
 			case e_HuffyInt:
-				{
-					const HuffyInt* HuffyIntPointer = reinterpret_cast<const HuffyInt*>(TempBasePointer) ;
-					BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyIntPointer->GetValue_C());
-					break;
-				}
-			case e_HuffyFloat:
-				{
-					const HuffyFloat* HuffyFloatPointer = reinterpret_cast<const HuffyFloat*>(TempBasePointer) ;
-					//Todo overload this function
-					BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyFloatPointer->GetValue_C());
-					break;
-				}
-			case e_HuffyBool:
-				//const HuffyBool* HuffyBoolPointer = reinterpret_cast<const HuffyBool*>(TempBasePointer) ;
-				//BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyBoolPointer->GetValue_C());
+			{
+				const HuffyInt* HuffyIntPointer = reinterpret_cast<const HuffyInt*>(TempBasePointer) ;
+				BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyIntPointer->GetValue_C());
 				break;
+			}
+			case e_HuffyFloat:
+			{
+				const HuffyFloat* HuffyFloatPointer = reinterpret_cast<const HuffyFloat*>(TempBasePointer) ;
+				BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyFloatPointer->GetValue_C());
+				break;
+			}
+			case e_HuffyBool:
+			{
+				const HuffyBool* HuffyBoolPointer = reinterpret_cast<const HuffyBool*>(TempBasePointer) ;
+				BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyBoolPointer->GetValue_C());
+				break;
+			}
 		}
 
 	}

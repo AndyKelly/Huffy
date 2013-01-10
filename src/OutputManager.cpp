@@ -25,7 +25,6 @@ void OutputManager::PrintInt(int ValueToBePrinted)
     cout << ValueToBePrinted << endl;
 }
 
-//Todo Replace with template type and merge these functions??
 void OutputManager::PrintFloat(float ValueToBePrinted)
 {
 	 cout << ValueToBePrinted << endl;

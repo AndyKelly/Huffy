@@ -1,7 +1,10 @@
 #include "HuffyManager.h"
 #include "HuffyCompressor.h"
 #include "HuffyBaseType.h"
-
+#include <string>
+#include <list>
+#include <bitset>
+#include <map>
 #include <math.h>
 
 //Static init
@@ -10,7 +13,7 @@
 	int HuffyCompressor::CurrentReadBit = 0;
 	int HuffyCompressor::CurrentReadByte = 0;
 	unsigned char HuffyCompressor::Buffer[BufferLimit];
-	//Todo Find a way to zero the first element
+
 
 	bool HuffyCompressor::m_InitalisedAsServer = false;
 	std::string HuffyCompressor::m_ClientAddress = "NULL";
@@ -35,6 +38,8 @@ void HuffyCompressor::Init(std::string ClientAddress, int PortNum)
 	m_ClientAddress = ClientAddress;
 	m_InitalisedAsServer = true;
 	m_PortNum = PortNum;
+	//Zero the first element
+	HuffyCompressor::Buffer[0] = NULL;
 }
 
 void HuffyCompressor::SendUpdate()
@@ -42,15 +47,27 @@ void HuffyCompressor::SendUpdate()
 	//Todo impliment
 	if(m_InitalisedAsServer)
 	{
-		//Send Ostream
-		//Wipe Ostream
+		//Todo Send Ostream
+		//Todo Wipe Ostream
 	}
+}
+
+void HuffyCompressor::SendPriorityQueuesUpdate(
+		std::priority_queue<HuffyManager::TypeQueueElement, std::vector<HuffyManager::TypeQueueElement>,HuffyManager::CompareTypeElements> TypeQueue,
+		std::priority_queue<HuffyManager::IDQueueElement, std::vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> IntIDQueue,
+		std::priority_queue<HuffyManager::IDQueueElement, std::vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> FloatIDQueue,
+		std::priority_queue<HuffyManager::IDQueueElement, std::vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> BoolIDQueue,
+		std::priority_queue<HuffyManager::BitsUsedQueueElement, std::vector<HuffyManager::BitsUsedQueueElement>,HuffyManager::CompareBitsUsedElements> BitsUsedQueue)
+{
+	//TypeQueue
+	//IntIDQueue
+	//FloatIDQueue
+	//BitsUsedQueue
 }
 
 
 void HuffyCompressor::AddToSendList(std::string  ID)
 {
-	//Todo impliment
 	//Todo Add type to Ostream
 }
 
@@ -146,7 +163,6 @@ void HuffyCompressor::AddHuffyTypeToBitSet(int TypeToAdd)
 	{
 		HuffyManager::TypeQueueElement* PreviousNode = StartNode;
 		StartNode = StartNode->m_Parent;
-		//todo this is backwards
 		//Todo impliment//////////////////////////////////////////////////////////////////////////////////
 		if(StartNode->m_LeftChild == PreviousNode)
 		{

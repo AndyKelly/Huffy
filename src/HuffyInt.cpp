@@ -19,8 +19,7 @@ HuffyInt::HuffyInt(int Value, string UniqueID)
 	m_Value = Value;
 	m_Sendable = true;
 	m_UniqueID = UniqueID;
-	m_HuffyID = IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt);
-	HuffyManager::RegisterHuffyTypeObject(m_HuffyID, this);
+	HuffyManager::RegisterHuffyTypeObject(m_UniqueID, this);
 }
 
 HuffyInt::~HuffyInt(void)
@@ -54,8 +53,7 @@ void HuffyInt::UpdateHuffyManagaer()
 
 	if(m_Sendable)
 	{
-		//Todo, Point of failure here if the type passed != to the actual type, fix this
-		HuffyManager::HuffyTypeModified(HuffyManager::e_HuffyInt, m_HuffyID);
+		HuffyManager::HuffyTypeModified(HuffyManager::e_HuffyInt, m_UniqueID);
 	}
 }
 

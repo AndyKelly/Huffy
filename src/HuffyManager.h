@@ -18,6 +18,7 @@ public:
 		e_HuffyFloat,
 		e_HuffyBool,
 	};
+
 	struct TypeQueueElement
 	{
 		TypeQueueElement(e_HuffyTypes TypeValue,
@@ -82,17 +83,6 @@ public:
 		BitsUsedQueueElement* m_Parent;
 	};
 
-	
-
-	static void Initalise(bool, std::string, int);
-	static void Adapt();
-	static void Update();
-
-	~HuffyManager(void);
-	static void HuffyTypeModified(e_HuffyTypes, std::string);
-	static void RegisterHuffyTypeObject(std::string, const HuffyBaseType *);
-private:
-
 	class CompareTypeElements 
 	{
 		public:
@@ -120,6 +110,17 @@ private:
 			return false;
 		};
 	};
+
+
+	static void Initalise(bool, std::string, int);
+	static void Adapt();
+	static void Update();
+
+	~HuffyManager(void);
+	static void HuffyTypeModified(e_HuffyTypes, std::string);
+	static void RegisterHuffyTypeObject(std::string, const HuffyBaseType *);
+private:
+
 
 	static bool m_Initalised;
 	static bool m_IsServer; 

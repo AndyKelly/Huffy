@@ -19,9 +19,7 @@ HuffyFloat::HuffyFloat(float Value, string UniqueID)
 	m_Value = Value;
 	m_Sendable = true;
 	m_UniqueID = UniqueID;
-	//Todo, sort out id's
-	m_HuffyID = IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat);
-	HuffyManager::RegisterHuffyTypeObject(m_HuffyID, this);
+	HuffyManager::RegisterHuffyTypeObject(m_UniqueID, this);
 }
 
 HuffyFloat::~HuffyFloat(void)
@@ -56,8 +54,7 @@ void HuffyFloat::UpdateHuffyManagaer()
 
 	if(m_Sendable)
 	{
-		//Todo, Point of failure here if the type passed != to the actual type, fix this
-		HuffyManager::HuffyTypeModified(HuffyManager::e_HuffyFloat, m_HuffyID);
+		HuffyManager::HuffyTypeModified(HuffyManager::e_HuffyFloat, m_UniqueID);
 	}
 }
 

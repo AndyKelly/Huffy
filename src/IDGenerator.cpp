@@ -12,7 +12,6 @@ long long IDGenerator::Vector2DsCreated = 1;
 long long IDGenerator::Vector3DsCreated = 1;
 long long IDGenerator::StringsCreated = 1;
 
-//Todo should be singleton
 IDGenerator::IDGenerator(void)
 {
 }

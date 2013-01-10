@@ -1,5 +1,10 @@
 #pragma once
 #define BufferLimit 256
+#include <string>
+#include <list>
+#include <bitset>
+#include <map>
+#include <math.h>
 class HuffyCompressor
 {
 	
@@ -11,6 +16,11 @@ public:
 	static void SendUpdate();
 	static int HowManyBitsToStoreThis(int);
 	static int HowManyBitsToStoreThis(float);
+	static void SendPriorityQueuesUpdate(std::priority_queue<HuffyManager::TypeQueueElement, std::vector<HuffyManager::TypeQueueElement>,HuffyManager::CompareTypeElements>,
+			std::priority_queue<HuffyManager::IDQueueElement, std::vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> ,
+			std::priority_queue<HuffyManager::IDQueueElement, std::vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> ,
+			std::priority_queue<HuffyManager::IDQueueElement, std::vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> ,
+			std::priority_queue<HuffyManager::BitsUsedQueueElement, std::vector<HuffyManager::BitsUsedQueueElement>,HuffyManager::CompareBitsUsedElements>);
 	static void PassPointersToHuffyTreeRootNodes(HuffyManager::TypeQueueElement*,HuffyManager::IDQueueElement* ,HuffyManager::IDQueueElement* ,HuffyManager::IDQueueElement*,HuffyManager::BitsUsedQueueElement* );
 	static void CompressHuffyBaseType(const HuffyBaseType*);
 	static void AddHuffyTypeToBitSet(int);

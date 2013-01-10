@@ -18,7 +18,8 @@ int main()
 	
 	OutputManager Output;
 	Output.PrintTitle();
-	cout << "Running unit test's.\n";
+
+	cout << "Running unit test's.";
 	UnitTest();
 	cout << "\nExiting\n";
 	return 0;

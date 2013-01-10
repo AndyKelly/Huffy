@@ -9,7 +9,6 @@ private:
 	float m_Value;
 	bool m_Sendable;
 	std::string m_UniqueID;
-	std::string m_HuffyID;
 
 	//Member functions
 	void UpdateHuffyManagaer(void);
