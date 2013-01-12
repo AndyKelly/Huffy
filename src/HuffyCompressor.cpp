@@ -1,23 +1,17 @@
 #include "HuffyManager.h"
 #include "HuffyCompressor.h"
 #include "HuffyBaseType.h"
+#include "SocketException.h"
+#include <iostream>
 #include <string>
 #include <list>
 #include <bitset>
 #include <map>
 #include <math.h>
 
-//Static init
-	int HuffyCompressor::CurrentBit = 0;
-	int HuffyCompressor::CurrentByte = 0;
-	int HuffyCompressor::CurrentReadBit = 0;
-	int HuffyCompressor::CurrentReadByte = 0;
-	unsigned char HuffyCompressor::Buffer[BufferLimit];
 
 
-	bool HuffyCompressor::m_InitalisedAsServer = false;
-	std::string HuffyCompressor::m_ClientAddress = "NULL";
-	int HuffyCompressor::m_PortNum = NULL;
+
 
 	HuffyManager::TypeQueueElement* HuffyCompressor::m_TypeTreeRootNode = NULL;
 	HuffyManager::IDQueueElement* HuffyCompressor::m_IntIDTreeRootNode = NULL;
@@ -31,44 +25,103 @@ HuffyCompressor::HuffyCompressor(void)
 
 HuffyCompressor::~HuffyCompressor(void)
 {
+	DeleteOldTrees();
 }
 
-void HuffyCompressor::Init(std::string ClientAddress, int PortNum)
+void ConstructUpdateFromIDList(std::list<std::string>)
 {
-	m_ClientAddress = ClientAddress;
-	m_InitalisedAsServer = true;
-	m_PortNum = PortNum;
-	//Zero the first element
-	HuffyCompressor::Buffer[0] = NULL;
+	//Find ID in tree
 }
 
-void HuffyCompressor::SendUpdate()
+std::string HuffyCompressor::GetUpdate()
 {
-	//Todo impliment
-	if(m_InitalisedAsServer)
+	//todo impliment
+	return "UPDATE";
+}
+
+
+//HuffyCompressor::ApplyUpdate(HuffyPtrMap, Update)
+	//HuffyPacker::StringToBoolList()
+	//Traverse type tree using bool list until found type, store
+	//Traverse ID tree using bool list until found ID, store
+	//if(!Bool)
+		//Traverse BitsUsed tree using bool list until found BitsUsed, store
+		//Construct value bool list
+		//HuffyPtrMap[ID]->SetValue(HuffyCompressor::ConstructValByTypeFromBLIST(value bool list,BitsUsed, type))
+	//else
+		//HuffyPtrMap[ID]->SetValue((BOOLLIST.Next)
+
+void HuffyCompressor::ConstructUpdateFromIDList(
+		std::list<std::string> ID_List,
+		std::map<std::string, const HuffyBaseType* > TypesMap,
+		std::map<std::string, HuffyManager::e_HuffyTypes > ID_TpyeAssociationMap
+		)
+{
+	while(!ID_List.empty())
 	{
-		//Todo Send Ostream
-		//Todo Wipe Ostream
+		std::string IDToAdd = ID_List.front();
+		ID_List.pop_front();
+
+		const HuffyBaseType* TempBasePointer = TypesMap[IDToAdd];
+
+		try
+		{
+			switch(ID_TpyeAssociationMap[IDToAdd])
+			{
+				case HuffyManager::e_HuffyInt:
+				{
+					const HuffyInt* HuffyIntPointer = reinterpret_cast<const HuffyInt*>(TempBasePointer) ;
+					AddIntToUpdate(IDToAdd,
+							HuffyCompressor::HowManyBitsToStoreThis(HuffyIntPointer->GetValue_C()),
+							HuffyIntPointer->GetValue_C());
+					break;
+				}
+				case HuffyManager::e_HuffyFloat:
+				{
+					break;
+				}
+				case HuffyManager::e_HuffyBool:
+				{
+					break;
+				}
+			}
+
+		}
+	    catch (...)
+	    {
+			//Todo some way of logging this error
+	    }
+	    //////////////////////////////////
+	    //Todo, retrieve string from HuffyPacker
 	}
 }
 
-void HuffyCompressor::SendPriorityQueuesUpdate(
-		std::priority_queue<HuffyManager::TypeQueueElement, std::vector<HuffyManager::TypeQueueElement>,HuffyManager::CompareTypeElements> TypeQueue,
-		std::priority_queue<HuffyManager::IDQueueElement, std::vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> IntIDQueue,
-		std::priority_queue<HuffyManager::IDQueueElement, std::vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> FloatIDQueue,
-		std::priority_queue<HuffyManager::IDQueueElement, std::vector<HuffyManager::IDQueueElement>,HuffyManager::CompareIDElements> BoolIDQueue,
-		std::priority_queue<HuffyManager::BitsUsedQueueElement, std::vector<HuffyManager::BitsUsedQueueElement>,HuffyManager::CompareBitsUsedElements> BitsUsedQueue)
+void HuffyCompressor::AddIntToUpdate(std::string IDToAdd,int NumberOfBitsUsed, int Value)
 {
-	//TypeQueue
-	//IntIDQueue
-	//FloatIDQueue
-	//BitsUsedQueue
+	//Todo impliment
+	//Construct bool list ID
+	//Huffy packer Add ID to m_update(BooList)
+	//Construct bool list Bits used
+	//Huffy packer Add bits used to m_update(BoolList)
+	//Huffy packer Add int value to m_update(NumberOfBitsUsed, Value)
 }
 
-
-void HuffyCompressor::AddToSendList(std::string  ID)
+void HuffyCompressor::AddFloatToUpdate(std::string IDToAdd,int NumberOfBitsUsed, float Value)
 {
-	//Todo Add type to Ostream
+	//Todo impliment
+	//Construct bool list ID
+	//Huffy packer Add ID to m_update(BooList)
+	//Construct bool list Bits used
+	//Huffy packer Add bits used to m_update(BoolList)
+	//Huffy packer Add float value to m_update(NumberOfBitsUsed, Value)
+}
+
+void HuffyCompressor::AddBoolToUpdate(std::string IDToAdd,int NumberOfBitsUsed, bool Value)
+{
+	//Todo impliment
+	//Construct bool list ID
+	//Huffy packer Add ID to m_update(BooList)
+	//Huffy packer Add bool value to m_update(true/false)
 }
 
 
@@ -149,36 +202,6 @@ void HuffyCompressor::DeleteBitsUsedQueueElementTree(HuffyManager::BitsUsedQueue
 	}
 }
 
-void HuffyCompressor::CompressHuffyBaseType(const HuffyBaseType* BaseTypeToCompress)
-{
-	AddHuffyTypeToBitSet(BaseTypeToCompress->GetType());
-}
-
-void HuffyCompressor::AddHuffyTypeToBitSet(int TypeToAdd)
-{
-	//Find type in huffy tree
-	HuffyManager::TypeQueueElement* StartNode = GetPointerToTypeInTypeTreeByType(TypeToAdd, m_TypeTreeRootNode);
-
-	while(StartNode->m_Parent != NULL)
-	{
-		HuffyManager::TypeQueueElement* PreviousNode = StartNode;
-		StartNode = StartNode->m_Parent;
-		//Todo impliment//////////////////////////////////////////////////////////////////////////////////
-		if(StartNode->m_LeftChild == PreviousNode)
-		{
-			WriteValueToBitset(e_ONE);
-		}
-		else 
-		{
-			WriteValueToBitset(e_ZERO);
-		}
-	}
-}
-
-void HuffyCompressor::WriteValueToBitset(int ValueToWrite)
-{
-	//Todo impliment///////////////////////////////////////////////////////////////////////////////////
-}
 
 HuffyManager::TypeQueueElement* HuffyCompressor::GetPointerToTypeInTypeTreeByType(int PassedValue, HuffyManager::TypeQueueElement* NodeToOperateOn)
 {
@@ -193,67 +216,17 @@ HuffyManager::TypeQueueElement* HuffyCompressor::GetPointerToTypeInTypeTreeByTyp
 	return NodeToOperateOn;
 }
 
-int HuffyCompressor::HowManyBitsToStoreThis(int)
+
+int HuffyCompressor::HowManyBitsToStoreThis(int )
 {
 	//Todo implement
+	//HuffyPacker::HowBigIsThisInt?
 	return 0;
 }
 
 int HuffyCompressor::HowManyBitsToStoreThis(float)
 {
 	//Todo implement
+	//HuffyPacker::HowBigIsThisFloat?
 	return 0;
-}
-
-void HuffyCompressor::writeInt(int Value,int numBitsToWrite)
-{     
-	int bitsWritten = 0;
-   while(bitsWritten <numBitsToWrite)
-	{ 
-		int bitToWrite = Value>>bitsWritten;
-		WriteIntToBuffer(bitToWrite);
-		bitsWritten++;    
-	}      
-}
-
-int HuffyCompressor::readInt(int numBitsToRead)
-{    
-	int returnVal= 0;
-	int bitsRead = 0;   
-	while(bitsRead<numBitsToRead)
-	{            
-		int bitToRead = ReadIntFromBuffer();
-		returnVal = returnVal | (bitToRead<<bitsRead); 
-		bitsRead++;   
-	}        
-	return returnVal;  
-}
-
-void HuffyCompressor::WriteIntToBuffer(int Value)
-{
-	if(CurrentBit == 8)
-	{
-		CurrentBit = 0;
-		CurrentByte++;
-		//Zero the current byte
-		Buffer[CurrentByte] = 0;
-	}
-
-	Buffer[CurrentByte] |= (Value << CurrentBit);
-	CurrentBit++;
-}
-
-int HuffyCompressor::ReadIntFromBuffer()
-{
-	if(CurrentReadBit == 8)
-	{
-		CurrentReadBit = 0;
-		CurrentReadByte++;
-	}
-
-	///Shift current byte over by CurrentReadBits
-	unsigned int CheckBit = Buffer[CurrentReadByte] >> CurrentReadBit;
-	CurrentReadBit++;
-
-	return(CheckBit & 1);
 }

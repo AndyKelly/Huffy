@@ -2,6 +2,8 @@
 #include "HuffyCompressor.h"
 #include "HuffyFloat.h"
 #include "HuffyBool.h"
+#include "HuffyPacker.h"
+#include <list>
 #include <string>
 #include <list>
 #include <bitset>
@@ -9,14 +11,19 @@
 using namespace std;
 
 //Init static member variables
+
+HuffyClient HuffyManager::m_HuffyClient;
+HuffyServer HuffyManager::m_HuffyServer;
 bool HuffyManager::m_Initalised = false;
 bool HuffyManager::m_IsServer = false; 
+std::map<std::string, HuffyManager::e_HuffyTypes > HuffyManager::m_ID_TypeMap;
 std::map<std::string, const HuffyBaseType* > HuffyManager::HuffyPtrMap;
 std::map<HuffyManager::e_HuffyTypes, long long > HuffyManager::UsedTypeFrequencyMap;
 std::map<int, long long> HuffyManager::BitsUsedFrequencyMap;
 std::map<std::string, long long > HuffyManager::IntIDFrequencyMap;
 std::map<std::string, long long > HuffyManager::FloatIDFrequencyMap;
 std::map<std::string, long long > HuffyManager::BoolIDFrequencyMap;
+std::list<std::string> HuffyManager::m_ModifiedTypes;
 
 HuffyManager::HuffyManager(void)
 {
@@ -26,22 +33,27 @@ HuffyManager::~HuffyManager(void)
 {
 }
 
-void HuffyManager::Initalise(bool IsServer, string ClientAddress, int PortNumber)
+bool HuffyManager::Initalise(bool IsServer, string ServerAddress)
 {
-	m_Initalised = true;
+
 	ConstructHuffyTrees();
 	if(IsServer)
 	{
-		m_IsServer = true;
-		HuffyCompressor::Init(ClientAddress,PortNumber);
-		SendPriorityQueues();
+		m_IsServer = IsServer;
+		if(m_HuffyServer.Initalise())
+		{
+			m_Initalised = true;
+		}
 	}
 	else
 	{
 		m_IsServer = false;
-		//Todo in a loop?
-		//HuffyCompressor::ListenOn(PortNumber);
+		if(m_HuffyClient.Initalise(ServerAddress))
+		{
+			m_Initalised = true;
+		}
 	}
+	return m_Initalised;
 }
 
 void HuffyManager::Update()
@@ -51,37 +63,30 @@ void HuffyManager::Update()
 		if(m_IsServer)
 		{
 			//Send update to client
-			HuffyCompressor::SendUpdate();
+			ConstructUpdate();
 
-			//std::map<std::string, const HuffyBaseType* >::iterator itr;
-			//for(itr = HuffyPtrMap.begin(); itr != HuffyPtrMap.end(); itr++)
-			//{
-			//	HuffyCompressor::CompressHuffyBaseType(itr->second);
-			//}
+			m_HuffyServer.AssignUpdate(HuffyCompressor::GetUpdate());
+			m_HuffyServer.ServerWaitForClientToRequestUpdate();
 		}
 		else
 		{
-			//Apply recieved updates
-			//If so apply it
+			ApplyUpdate(m_HuffyClient.RequestUpdate());
 		}
 	}
 }
 
-void HuffyManager::SendPriorityQueues()
+void HuffyManager::ApplyUpdate(std::string)
 {
-	HuffyCompressor::SendPriorityQueuesUpdate(GetHuffyTypesPriorityQueue(),
-	GetIDPriorityQueueByType(e_HuffyInt),
-	GetIDPriorityQueueByType(e_HuffyFloat),
-	GetIDPriorityQueueByType(e_HuffyBool),
-	GetBitsUsedPriorityQueue());
+	//Todo impliment
+	//HuffyCompressor::ApplyUpdate(HuffyPtrMap, Update)
+
 }
 
-void HuffyManager::Adapt()
+void HuffyManager::ConstructUpdate()
 {
-	//Create new Huffy tree's
-	ConstructHuffyTrees();
-	//Update the client
-	SendPriorityQueues();
+	HuffyCompressor::ConstructUpdateFromIDList(m_ModifiedTypes,HuffyPtrMap,m_ID_TypeMap);
+	//Wipe list for next update
+	m_ModifiedTypes.clear();
 }
 
 void HuffyManager::ConstructHuffyTrees(void)
@@ -368,6 +373,10 @@ void HuffyManager::HuffyTypeModified(e_HuffyTypes e_Type, string ID)
 	IncrementIDFrequencyMapByType(e_Type, ID);
 	IncrementBitsUsedFrequencyMapByType(e_Type, ID);
 
+	//Keep track of all the types which have been modified by theyre ID
+	m_ModifiedTypes.push_front(ID);
+	m_ID_TypeMap[ID] = e_Type;
+
 	//Check if map entry exists, if not init, else increment
 	if(UsedTypeFrequencyMap.find(e_Type) == UsedTypeFrequencyMap.end()) 
 	{
@@ -378,8 +387,6 @@ void HuffyManager::HuffyTypeModified(e_HuffyTypes e_Type, string ID)
 		UsedTypeFrequencyMap[e_Type]++;
 	}
 
-	//Ensure the modified object is sent over the network
-	HuffyCompressor::AddToSendList(ID);
 }
 
 void HuffyManager::IncrementBitsUsedFrequencyMapByType(e_HuffyTypes e_Type, string ID)
@@ -406,8 +413,8 @@ void HuffyManager::IncrementBitsUsedFrequencyMapByType(e_HuffyTypes e_Type, stri
 			}
 			case e_HuffyBool:
 			{
-				const HuffyBool* HuffyBoolPointer = reinterpret_cast<const HuffyBool*>(TempBasePointer) ;
-				BitsUsed = HuffyCompressor::HowManyBitsToStoreThis(HuffyBoolPointer->GetValue_C());
+				//Only takes one bit to store a bool
+				BitsUsed = 1;
 				break;
 			}
 		}

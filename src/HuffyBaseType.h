@@ -4,7 +4,7 @@ class HuffyBaseType
 {
 public:
 	HuffyBaseType(void);
-	~HuffyBaseType(void);
+	virtual ~HuffyBaseType(void);
 	virtual int GetType(void) const = 0;
 private:
 };

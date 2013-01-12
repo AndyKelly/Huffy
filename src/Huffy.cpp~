@@ -15,9 +15,11 @@ void UnitTest();
 
 int main()
 {
+	
 	OutputManager Output;
 	Output.PrintTitle();
-	cout << "Running unit test's.\n";
+
+	cout << "Running unit test's.";
 	UnitTest();
 	cout << "\nExiting\n";
 	return 0;
@@ -33,6 +35,12 @@ void UnitTest()
 
 	if(Server)
 	{		
+		//Get address
+		cout << "\nOk, setting up a server, please enter an address to send to: \n";
+		std::string IPAddress =  Input.GetStringFromUser(); 
+		cout << "\nPlease enter a port to send to, between 1024 & 65535: \n";
+		int PortNum = Input.GetPortNumFromUser();
+
 		//Create a few huffy types
 		HuffyInt FirstInt(rand() % 100, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
 		HuffyInt SecondInt(rand() % 100, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
@@ -69,7 +77,7 @@ void UnitTest()
 		}
 
 		//Send an update
-		HuffyManager::Initalise(Server, "");
+		HuffyManager::Initalise(Server, IPAddress, PortNum);
 		HuffyManager::Update();
 
 		cout << "Sum of all sent types is:\n";
@@ -78,9 +86,10 @@ void UnitTest()
 	}
 	else
 	{
-		//Get address
-		cout << "\nOk, setting up a client, please enter an address to send to i.e. localhost: \n";
-		std::string IPAddress =  Input.GetStringFromUser();
+		//get port 
+		cout << "Ok, setting up a client, please enter a port to listen on, between 1024 & 65535";
+		int PortNum = Input.GetPortNumFromUser();
+
 		//Create a few huffy types
 		//Create a few huffy types
 		HuffyInt FirstInt(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
@@ -118,7 +127,7 @@ void UnitTest()
 		}
 
 		//Await an update
-		HuffyManager::Initalise(Server, IPAddress);
+		HuffyManager::Initalise(Server, "", PortNum);
 		HuffyManager::Update();
 
 		//Output sum of types

@@ -2,6 +2,8 @@
 #include <string>
 #include "HuffyInt.h"
 #include "HuffyBaseType.h"
+#include "HuffyServer.h"
+#include "HuffyClient.h"
 #include <list>
 #include <vector>
 #include <map>
@@ -13,7 +15,7 @@ public:
 	
 	enum e_HuffyTypes 
 	{
-		e_HuffyNonLeaf = NULL,
+		e_HuffyNonLeaf = 0,
 		e_HuffyInt,
 		e_HuffyFloat,
 		e_HuffyBool,
@@ -112,7 +114,7 @@ public:
 	};
 
 
-	static void Initalise(bool, std::string, int);
+	static bool Initalise(bool, std::string);
 	static void Adapt();
 	static void Update();
 
@@ -124,9 +126,13 @@ private:
 
 	static bool m_Initalised;
 	static bool m_IsServer; 
+	static HuffyClient m_HuffyClient;
+	static HuffyServer m_HuffyServer;
+	//Modified types ID list
+	static std::list<std::string> m_ModifiedTypes;
 	
-	static void SendPriorityQueues();
-
+	static void ApplyUpdate(std::string);
+	static void ConstructUpdate();
 	
 	//Construct Huffman trees, send them to the compressor
 	static void ConstructHuffyTrees(void);
@@ -138,6 +144,9 @@ private:
 	//Huffy types base class pointer map
 	static std::map<std::string, const HuffyBaseType* > HuffyPtrMap;
 	
+	//Type association map
+	static std::map<std::string,e_HuffyTypes > m_ID_TypeMap;
+
 	//Frequency maps
 	static std::map<e_HuffyTypes, long long > UsedTypeFrequencyMap;
 	static std::map<std::string, long long > IntIDFrequencyMap;

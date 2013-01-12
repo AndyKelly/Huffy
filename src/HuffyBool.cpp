@@ -1,5 +1,4 @@
 #include "HuffyBool.h"
-#include "IDGenerator.h"
 #include "HuffyManager.h"
 
 using namespace std;
