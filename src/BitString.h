@@ -14,6 +14,7 @@ public:
 	virtual ~BitString();
 	void WriteOne();
 	void WriteZero();
+	void Reverse();
 	std::string GetValue();
 private:
 	std::string m_Contents;

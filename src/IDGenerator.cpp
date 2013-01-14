@@ -1,16 +1,17 @@
 #include "IDGenerator.h"
 #include "HuffyManager.h"
+#include "HuffyConstants.h"
 #include <sstream>
 
 using namespace std;
 
 //Initalise static members
-long long IDGenerator::IntsCreated = 1;
-long long IDGenerator::BoolsCreated = 1;
-long long IDGenerator::FloatsCreated = 1;
-long long IDGenerator::Vector2DsCreated = 1;
-long long IDGenerator::Vector3DsCreated = 1;
-long long IDGenerator::StringsCreated = 1;
+long long IDGenerator::IntsCreated = 0;
+long long IDGenerator::BoolsCreated = 0;
+long long IDGenerator::FloatsCreated = 0;
+long long IDGenerator::Vector2DsCreated = 0;
+long long IDGenerator::Vector3DsCreated = 0;
+long long IDGenerator::StringsCreated = 0;
 
 IDGenerator::IDGenerator(void)
 {
@@ -21,29 +22,41 @@ IDGenerator::~IDGenerator(void)
 {
 }
 
-string IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyTypes TypeToUse)
+string IDGenerator::CreateHuffyIDByType(e_HuffyTypes TypeToUse)
 {
 	IncrementTypeSpecificCounterByTypeEnum(TypeToUse);
 
-	std::string ID;
+	std::string ID = "";
 	std::stringstream strstream;
 	strstream << TypeToUse;
-	strstream << IntsCreated;
+	switch (TypeToUse)
+	{
+		case e_HuffyBool:
+			strstream << BoolsCreated;
+			break;
+		case e_HuffyInt:
+			strstream << IntsCreated;
+			break;
+		case e_HuffyFloat:
+			strstream << FloatsCreated;
+			break;
+	}
+
 	strstream >> ID;
 	return ID;
 }
 
-void IDGenerator::IncrementTypeSpecificCounterByTypeEnum(HuffyManager::e_HuffyTypes TypeToIncrement)
+void IDGenerator::IncrementTypeSpecificCounterByTypeEnum(e_HuffyTypes TypeToIncrement)
 {
 	switch (TypeToIncrement) 
 	{
-		case HuffyManager::e_HuffyBool:
+		case e_HuffyBool:
 			BoolsCreated++;
 			break;
-		case HuffyManager::e_HuffyInt:
+		case e_HuffyInt:
 			IntsCreated++;
 			break;
-		case HuffyManager::e_HuffyFloat:
+		case e_HuffyFloat:
 			FloatsCreated++;
 			break;
 	}

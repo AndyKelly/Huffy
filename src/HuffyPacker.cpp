@@ -10,6 +10,7 @@
 #include "BitString.h"
 #include <iostream>
 #include <string>
+#include "HuffyConstants.h"
 //Todo, needs some serious tidy up
 HuffyPacker::HuffyPacker() {
 	CurrentBit = 0;
@@ -25,13 +26,11 @@ HuffyPacker::~HuffyPacker() {
 
 void HuffyPacker::ApplyUpdateString(std::string PassedString)
 {
-	//Todo should be coming from HuffyConstants.h
-	int BufferSize = 1000;
 	int counter = 0;
 
 	for(std::string::iterator it = PassedString.begin(); it != PassedString.end(); ++it)
 	{
-		if(counter < BufferSize)
+		if(counter < BUFFER_SIZE)
 		{
 			Buffer[counter] = (unsigned char)*it;
 			counter++;
@@ -53,18 +52,18 @@ std::string HuffyPacker::ReturnStringTest(void)
 std::string HuffyPacker::ReturnUpdateString()
 {
 	std::string ReturnString;
-	//Todo this 8 should be coming from HuffyConstants.h
 	int LastWrittenPosition = 0;
 	if(CurrentByte != 0)
 	{
-		//Should be coming from huffyconstants, i.e. Byte size
-		LastWrittenPosition = (((CurrentByte + 1) * 8) + CurrentBit);
+		//Todo, +1 ??
+		LastWrittenPosition = (((CurrentByte + 1) * BYTE_SIZE) + CurrentBit);
 	}
 	//Maybe nothing has been written but we want to retrieve the applied update for some reason
 	else
 	{
-		//Should be coming from huffyconstants, i.e. BufferSize
-		LastWrittenPosition = 1000;
+		//Todo, why would we want to read the buffer if noting has been written to it?
+		//Consider revising this
+		LastWrittenPosition = BUFFER_SIZE;
 	}
 
 	int counter = 0;
@@ -74,6 +73,24 @@ std::string HuffyPacker::ReturnUpdateString()
 		counter++;
 	}
 	return ReturnString;
+}
+
+float HuffyPacker::ReadFloatAtIndex(int Index, int BitsUsed)
+{
+	int FloatAsInt = ReadIntAtIndex(Index, BitsUsed);
+	float ReturnValue = (float)FloatAsInt;
+	return ReturnValue/(float)SIGNIFICANT_DIGITS_MULTIPLIER;
+}
+
+bool HuffyPacker::ReadBoolAtIndex(int Index)
+{
+	//Use one bit for bool
+	//Todo, this should be in HuffyConstants
+	if(ReadIntAtIndex(Index, 1))
+	{
+		return true;
+	}
+	return false;
 }
 
 int HuffyPacker::ReadIntAtIndex(int Index, int BitsUsed)
@@ -104,10 +121,11 @@ int HuffyPacker::ReadIntAtIndex(int Index, int BitsUsed)
 BitString HuffyPacker::GetUpdateAsBitsetString()
 {
 	BitString ReturnString;
-	while(CurrentReadByte <= CurrentByte)
+	int TempReadBitIndex=0;
+	while(TempReadBitIndex <= CurrentByte*8 + CurrentBit-1)
 	{
 		//Read one bit
-		if(readInt(1) == 1)
+		if(ReadIntAtIndex(TempReadBitIndex,1) == 1)
 		{
 			ReturnString.WriteOne();
 		}
@@ -115,6 +133,7 @@ BitString HuffyPacker::GetUpdateAsBitsetString()
 		{
 			ReturnString.WriteZero();
 		}
+		TempReadBitIndex++;
 	}
 	return ReturnString;
 }
@@ -149,9 +168,8 @@ int HuffyPacker::ReadIntValueFromBuffer(int BitsToUse)
 
 void HuffyPacker::AddFloatValueToUpdate(int BitsToUse, float Value)
 {
-	//Todo, should get significant digits from HuffyCOnstants.h
 	//Round string off to significant digits
-	int i_Value = (int)(Value*100);
+	int i_Value = (int)(Value*SIGNIFICANT_DIGITS_MULTIPLIER);
 	writeInt(i_Value, BitsToUse);
 }
 
@@ -184,18 +202,30 @@ void HuffyPacker::WriteBitsetStyleStringToBuffer(std::string StringToWrite)
 			}
 		}
 	}
+	else
+	{
+		std::cout<<"Invalid bitset string";
+	}
 }
 
+//Todo, this can be optimised
+//Fix in next iteration
 bool HuffyPacker::CheckIfStringIsValid(std::string StringToCheck)
 {
+	bool ReturnValue = false;
 	for(std::string::iterator it = StringToCheck.begin(); it != StringToCheck.end(); ++it)
 	{
-	    if(*it != '0' || *it != '0')
+		ReturnValue = false;
+	    if(*it == '0')
 	    {
-	    	return false;
+	    	ReturnValue = true;
+	    }
+	    if(*it == '1')
+	    {
+	    	ReturnValue = true;
 	    }
 	}
-	return true;
+	return ReturnValue;
 }
 
 void HuffyPacker::WriteOneToBuffer()
@@ -212,10 +242,11 @@ void HuffyPacker::WriteZeroToBuffer()
 
 int HuffyPacker::HowBigIsThisFloat(float ValueToAdd)
 {
-	//Todo, get significant digits from HuffyConstants.h
-	return HowBigIsThisInt((int)ValueToAdd*100);
+	return HowBigIsThisInt((int)ValueToAdd*SIGNIFICANT_DIGITS_MULTIPLIER);
 }
 
+//Todo, this is gloriously inefficient, these values should be cached somehow.
+//Add in next iteration, an algorithmic approach could work.
 int HuffyPacker::HowBigIsThisInt(int IntToTest)
 {
 	int readVal = 0;

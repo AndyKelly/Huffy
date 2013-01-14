@@ -22,9 +22,12 @@ public:
 	//Virtual overrides
 	int GetType(void) const;
 
+	//Setter
+	void SetValue(float);
 	//Getter functions
-	float GetValue_C(void)const;
+	float GetValue_C(void) const;
 	float GetValue(void);
+	std::string GetID(void);
 	bool isBeingSent(void);
 	//Operator Overloads
 	HuffyFloat operator++(void);

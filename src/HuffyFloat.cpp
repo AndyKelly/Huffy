@@ -1,6 +1,7 @@
 #include "HuffyFloat.h"
 #include "IDGenerator.h"
 #include "HuffyManager.h"
+#include "HuffyConstants.h"
 
 using namespace std;
 
@@ -24,16 +25,26 @@ HuffyFloat::HuffyFloat(float Value, string UniqueID)
 
 HuffyFloat::~HuffyFloat(void)
 {
-	//Todo Alert HuffyManager that this object is destroyed
-	//HuffyManager::RemoveThisInstance(m_UniqueID);
+	HuffyManager::RemoveType(m_UniqueID, e_HuffyFloat);
+}
+
+void HuffyFloat::SetValue(float NewValue)
+{
+	UpdateHuffyManagaer();
+	m_Value = NewValue;
 }
 
 int HuffyFloat::GetType(void) const
 {
-	return HuffyManager::e_HuffyFloat;
+	return e_HuffyFloat;
 }
 
 //Gets
+std::string HuffyFloat::GetID(void)
+{
+	return m_UniqueID;
+}
+
 float HuffyFloat::GetValue_C(void)const
 {
 	return m_Value;
@@ -54,7 +65,7 @@ void HuffyFloat::UpdateHuffyManagaer()
 
 	if(m_Sendable)
 	{
-		HuffyManager::HuffyTypeModified(HuffyManager::e_HuffyFloat, m_UniqueID);
+		HuffyManager::HuffyTypeModified(e_HuffyFloat, m_UniqueID);
 	}
 }
 

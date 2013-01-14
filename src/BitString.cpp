@@ -4,7 +4,7 @@
  *  Created on: Jan 12, 2013
  *      Author: hal
  */
-
+#include <algorithm>
 #include "BitString.h"
 
 BitString::BitString()
@@ -14,6 +14,11 @@ BitString::BitString()
 
 BitString::~BitString()
 {
+}
+
+void BitString::Reverse()
+{
+	std::reverse(m_Contents.begin(), m_Contents.end());
 }
 
 void BitString::WriteOne()

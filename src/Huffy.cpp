@@ -4,6 +4,7 @@
 #include "InputManager.h"
 #include "OutputManager.h"
 #include "IDGenerator.h"
+#include "HuffyConstants.h"
 #include "HuffyInt.h"
 #include "HuffyFloat.h"
 #include "HuffyBool.h"
@@ -17,7 +18,6 @@ int main()
 {
 	OutputManager Output;
 	Output.PrintTitle();
-	cout << "Running unit test's.\n";
 	UnitTest();
 	cout << "\nExiting\n";
 	return 0;
@@ -28,24 +28,34 @@ void UnitTest()
 	InputManager Input;
 	OutputManager Output;
 	///Am I a client or a server?
-	cout << "Is this instance a server? y/n";
+	cout << "Is this instance a server? y/n: ";
 	bool Server = Input.GetYesOrNoFromUser();
-
 	if(Server)
 	{		
+
 		//Create a few huffy types
-		HuffyInt FirstInt(rand() % 100, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
-		HuffyInt SecondInt(rand() % 100, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
-		HuffyInt ThirdInt(rand() % 100, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
+		HuffyInt FirstInt(rand() % 100, IDGenerator::CreateHuffyIDByType(e_HuffyInt));
+		HuffyManager::RegisterHuffyIntObject(FirstInt.GetID(),&FirstInt);
+		HuffyInt SecondInt(rand() % 100, IDGenerator::CreateHuffyIDByType(e_HuffyInt));
+		HuffyManager::RegisterHuffyIntObject(SecondInt.GetID(),&SecondInt);
+		HuffyInt ThirdInt(rand() % 100, IDGenerator::CreateHuffyIDByType(e_HuffyInt));
+		HuffyManager::RegisterHuffyIntObject(ThirdInt.GetID(),&ThirdInt);
+		HuffyInt FourthInt(rand() % 100, IDGenerator::CreateHuffyIDByType(e_HuffyInt));
+		HuffyManager::RegisterHuffyIntObject(FourthInt.GetID(),&FourthInt);
 
-		HuffyFloat FirstFloat(float(rand() % 100), IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
-		HuffyFloat SecondFloat(float(rand() % 100), IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
-		HuffyFloat ThirdFloat(float(rand() % 100), IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
+		HuffyFloat FirstFloat(float(rand() % 100), IDGenerator::CreateHuffyIDByType(e_HuffyFloat));
+		HuffyManager::RegisterHuffyFloatObject(FirstFloat.GetID(),&FirstFloat);
+		HuffyFloat SecondFloat(float(rand() % 100), IDGenerator::CreateHuffyIDByType(e_HuffyFloat));
+		HuffyManager::RegisterHuffyFloatObject(SecondFloat.GetID(),&SecondFloat);
+		HuffyFloat ThirdFloat(float(rand() % 100), IDGenerator::CreateHuffyIDByType(e_HuffyFloat));
+		HuffyManager::RegisterHuffyFloatObject(ThirdFloat.GetID(),&ThirdFloat);
 
-		HuffyBool FirstBool(true, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
-		HuffyBool SecondBool(false, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
-		HuffyBool ThirdBool(true, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
-		
+		HuffyBool FirstBool(true, IDGenerator::CreateHuffyIDByType(e_HuffyBool));
+		HuffyManager::RegisterHuffyBoolObject(FirstBool.GetID(),&FirstBool);
+		HuffyBool SecondBool(false, IDGenerator::CreateHuffyIDByType(e_HuffyBool));
+		HuffyManager::RegisterHuffyBoolObject(SecondBool.GetID(),&SecondBool);
+		HuffyBool ThirdBool(true, IDGenerator::CreateHuffyIDByType(e_HuffyBool));
+		HuffyManager::RegisterHuffyBoolObject(ThirdBool.GetID(),&ThirdBool);
 		//Calculate sum of types
 		float sum = 0;
 		sum += float(FirstInt.GetValue());
@@ -68,32 +78,47 @@ void UnitTest()
 			sum++;
 		}
 
-		//Send an update
-		HuffyManager::Initalise(Server, "");
-		HuffyManager::Update();
 
-		cout << "Sum of all sent types is:\n";
+		cout << "\nSum of all Huffy types is:";
 		Output.PrintFloat(sum);
+		//Send an update
+
+		cout << "\nInitalising server\n";
+		HuffyManager::Initalise(Server, "");
+		bool Continue = true;
+		HuffyManager::Update();
+		cout<< "\nUpdate sent";
+
+
 
 	}
 	else
 	{
 		//Get address
-		cout << "\nOk, setting up a client, please enter an address to send to i.e. localhost: \n";
+		cout << "\nOk, setting up a client, please enter server address i.e. localhost: \n";
 		std::string IPAddress =  Input.GetStringFromUser();
 		//Create a few huffy types
 		//Create a few huffy types
-		HuffyInt FirstInt(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
-		HuffyInt SecondInt(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
-		HuffyInt ThirdInt(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyInt));
+		HuffyInt FirstInt(0, IDGenerator::CreateHuffyIDByType(e_HuffyInt));
+		HuffyManager::RegisterHuffyIntObject(FirstInt.GetID(),&FirstInt);
+		HuffyInt SecondInt(0, IDGenerator::CreateHuffyIDByType(e_HuffyInt));
+		HuffyManager::RegisterHuffyIntObject(SecondInt.GetID(),&SecondInt);
+		HuffyInt ThirdInt(0, IDGenerator::CreateHuffyIDByType(e_HuffyInt));
+		HuffyManager::RegisterHuffyIntObject(ThirdInt.GetID(),&ThirdInt);
 
-		HuffyFloat FirstFloat(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
-		HuffyFloat SecondFloat(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
-		HuffyFloat ThirdFloat(0, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyFloat));
+		HuffyFloat FirstFloat(0, IDGenerator::CreateHuffyIDByType(e_HuffyFloat));
+		HuffyManager::RegisterHuffyFloatObject(FirstFloat.GetID(),&FirstFloat);
+		HuffyFloat SecondFloat(0, IDGenerator::CreateHuffyIDByType(e_HuffyFloat));
+		HuffyManager::RegisterHuffyFloatObject(SecondFloat.GetID(),&SecondFloat);
+		HuffyFloat ThirdFloat(0, IDGenerator::CreateHuffyIDByType(e_HuffyFloat));
+		HuffyManager::RegisterHuffyFloatObject(ThirdFloat.GetID(),&ThirdFloat);
 
-		HuffyBool FirstBool(false, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
-		HuffyBool SecondBool(false, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
-		HuffyBool ThirdBool(false, IDGenerator::CreateHuffyIDByType(HuffyManager::e_HuffyBool));
+		HuffyBool FirstBool(false, IDGenerator::CreateHuffyIDByType(e_HuffyBool));
+		HuffyManager::RegisterHuffyBoolObject(FirstBool.GetID(),&FirstBool);
+		HuffyBool SecondBool(false, IDGenerator::CreateHuffyIDByType(e_HuffyBool));
+		HuffyManager::RegisterHuffyBoolObject(SecondBool.GetID(),&SecondBool);
+		HuffyBool ThirdBool(false, IDGenerator::CreateHuffyIDByType(e_HuffyBool));
+		HuffyManager::RegisterHuffyBoolObject(ThirdBool.GetID(),&ThirdBool);
 		
 		//Calculate sum of types
 		float sum = 0;
@@ -116,14 +141,15 @@ void UnitTest()
 		{
 			sum++;
 		}
-
+		//Output sum of types
+		cout << "\nSum of all Huffy types before update is:\n";
+		Output.PrintFloat(sum);
 		//Await an update
 		HuffyManager::Initalise(Server, IPAddress);
 		HuffyManager::Update();
-
-		//Output sum of types
-		cout << "Sum of all sent types is:\n";
+		cout << "\n\n\nSum of all types after update is:\n";
 		Output.PrintFloat(sum);
+
 	}
 
 }

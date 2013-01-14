@@ -23,6 +23,8 @@ HuffyClient::~HuffyClient() {
 bool HuffyClient::Initalise(std::string Address)
 {
 	try {
+		//Todo, this value should be configurable, in HuffyConstants.h?
+		//Fix in next iteraltion
 		m_ClientSocket = new ClientSocket(Address, 30000);
 
 		std::string reply;
@@ -35,6 +37,7 @@ bool HuffyClient::Initalise(std::string Address)
 			{
 				std::cout << "\nConnected to server successfully\n";
 				m_Initalised = true;
+				return true;
 			}
 			else
 			{
@@ -66,6 +69,10 @@ std::string HuffyClient::RequestUpdate()
 				*m_ClientSocket >> reply;
 				if (reply[0] == UPDATE_RESPONSE[0])
 				{
+					std::cout << "\nRetrieved update from server:" << reply <<"\n";
+					std::cout << "\nnote: R is the value for UPDATE_RESPONSE defined in the Comunication codes header";
+					//Strip communication code from string
+					reply = reply.substr(1, reply.size());
 					return reply;
 				}
 				else

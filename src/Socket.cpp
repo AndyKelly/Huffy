@@ -81,11 +81,9 @@ bool Socket::listen() const
 
 bool Socket::accept(Socket& new_socket) const
 {
-	cout << "Accepting socket";
 	int addr_length = sizeof(m_addr);
 	new_socket.m_sock = ::accept(m_sock, (sockaddr *) &m_addr,
 			(socklen_t *) &addr_length);
-	cout << "Finished Accepting socket accepting socket";
 	if (new_socket.m_sock <= 0)
 	{
 		return false;

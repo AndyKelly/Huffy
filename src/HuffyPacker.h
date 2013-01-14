@@ -10,6 +10,7 @@
 #include <list>
 #include <string>
 #include "BitString.h"
+#include "HuffyConstants.h"
 class HuffyPacker {
 public:
 	std::string ReturnStringTest();
@@ -21,6 +22,8 @@ public:
 	int HowBigIsThisInt(int);
 	int HowBigIsThisFloat(float);
 	int ReadIntAtIndex(int, int);
+	float ReadFloatAtIndex(int, int);
+	bool ReadBoolAtIndex(int);
 	void AddBoolValueToUpdate(bool);
 	void AddFloatValueToUpdate(int, float);
 	int ReadIntValueFromBuffer(int);
@@ -30,7 +33,7 @@ public:
 	void AddIDtoUpdate(std::string);
 	void WriteBitsetStyleStringToBuffer(std::string);
 	bool CheckIfStringIsValid(std::string StringToCheck);
-
+private:
 	void WriteOneToBuffer();
 	void WriteZeroToBuffer();
 	void writeInt(int,int);
@@ -43,8 +46,7 @@ public:
 	int CurrentReadBit;
 	int CurrentReadByte;
 
-	//Todo change to something sensible, Huffy constants.h
-	unsigned char Buffer[1000];
+	unsigned char Buffer[BUFFER_SIZE];
 };
 
 #endif /* HUFFYPACKER_H_ */

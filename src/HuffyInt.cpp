@@ -1,6 +1,7 @@
 #include "HuffyInt.h"
 #include "IDGenerator.h"
 #include "HuffyManager.h"
+#include "HuffyConstants.h"
 
 using namespace std;
 
@@ -24,13 +25,25 @@ HuffyInt::HuffyInt(int Value, string UniqueID)
 
 HuffyInt::~HuffyInt(void)
 {
-	//Todo Alert HuffyManager that this object is destroyed
+	HuffyManager::RemoveType(m_UniqueID, e_HuffyInt);
 }
 
-int HuffyInt::GetType(void) const
+void HuffyInt::SetValue(int NewValue)
 {
-	return HuffyManager::e_HuffyInt;
+	UpdateHuffyManagaer();
+	m_Value = NewValue;
 }
+
+int HuffyInt::GetType(void)const
+{
+	return e_HuffyInt;
+}
+
+std::string HuffyInt::GetID(void)
+{
+	return m_UniqueID;
+}
+
 
 //Gets
 int HuffyInt::GetValue_C(void)const
@@ -53,7 +66,7 @@ void HuffyInt::UpdateHuffyManagaer()
 
 	if(m_Sendable)
 	{
-		HuffyManager::HuffyTypeModified(HuffyManager::e_HuffyInt, m_UniqueID);
+		HuffyManager::HuffyTypeModified(e_HuffyInt, m_UniqueID);
 	}
 }
 

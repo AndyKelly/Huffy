@@ -1,4 +1,5 @@
 #include "HuffyBool.h"
+#include "HuffyConstants.h"
 #include "HuffyManager.h"
 
 using namespace std;
@@ -23,15 +24,27 @@ HuffyBool::HuffyBool(bool Value, string UniqueID)
 
 HuffyBool::~HuffyBool(void)
 {
-	//Todo Alert HuffyManager that this object is destroyed
+	HuffyManager::RemoveType(m_UniqueID, e_HuffyBool);
 }
 
-int HuffyBool::GetType(void) const
+int HuffyBool::GetType(void)const
 {
-	return HuffyManager::e_HuffyBool;
+	return e_HuffyBool;
 }
+
+void HuffyBool::SetValue(bool NewValue)
+{
+	UpdateHuffyManagaer();
+	m_Value = NewValue;
+}
+
 
 //Gets
+std::string HuffyBool::GetID(void)
+{
+	return m_UniqueID;
+}
+
 bool HuffyBool::GetValue_C(void)const
 {
 	return m_Value;
@@ -51,7 +64,7 @@ void HuffyBool::UpdateHuffyManagaer()
 {
 	if(m_Sendable)
 	{
-		HuffyManager::HuffyTypeModified(HuffyManager::e_HuffyBool, m_UniqueID);
+		HuffyManager::HuffyTypeModified(e_HuffyBool, m_UniqueID);
 	}
 }
 

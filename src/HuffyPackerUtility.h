@@ -9,6 +9,7 @@
 #define HUFFYPACKERUTILITY_H_
 #include <list>
 #include <string>
+#include "HuffyConstants.h"
 
 class HuffyPackerUtility {
 public:
@@ -26,8 +27,7 @@ private:
 	int CurrentTempByte;
 	int CurrentTempReadBit;
 	int CurrentTempReadByte;
-	//Todo something sensible here
-	unsigned char TempBuffer[100];
+	unsigned char TempBuffer[BUFFER_SIZE];
 
 };
 

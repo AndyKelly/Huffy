@@ -1,14 +1,15 @@
 #pragma once
 #include <string>
 #include "HuffyManager.h"
+
 class IDGenerator
 {
 public:
 	IDGenerator(void);
 	~IDGenerator(void);
-	static std::string CreateHuffyIDByType(HuffyManager::e_HuffyTypes);
+	static std::string CreateHuffyIDByType(e_HuffyTypes);
 private:
-	static void IncrementTypeSpecificCounterByTypeEnum(HuffyManager::e_HuffyTypes);
+	static void IncrementTypeSpecificCounterByTypeEnum(e_HuffyTypes);
 	static long long IntsCreated;
 	static long long BoolsCreated;
 	static long long FloatsCreated;

@@ -5,9 +5,14 @@
 #include <bitset>
 #include <map>
 #include <math.h>
+#include <string>
 #include "ServerSocket.h"
 #include "SocketException.h"
+#include "HuffyConstants.h"
+#include "HuffyPacker.h"
+#include "TreeUtility.h"
 #include "ClientSocket.h"
+#include "HuffyTreeManager.h"
 class HuffyCompressor
 {
 	
@@ -16,45 +21,36 @@ public:
 	~HuffyCompressor(void);
 	static bool Initalise(std::string, int, bool);
 	static std::string GetUpdate();
+	static void ApplyUpdate(std::map<std::string, const HuffyBaseType* >,
+			std::map<std::string, HuffyInt* >,
+			std::map<std::string, HuffyFloat* >,
+			std::map<std::string, HuffyBool* >,
+			std::string);
+	static void Adapt(void);
 	static int HowManyBitsToStoreThis(int);
 	static int HowManyBitsToStoreThis(float);
-	static void PassPointersToHuffyTreeRootNodes(HuffyManager::TypeQueueElement*,HuffyManager::IDQueueElement* ,HuffyManager::IDQueueElement* ,HuffyManager::IDQueueElement*,HuffyManager::BitsUsedQueueElement* );
 	static void CompressHuffyBaseType(const HuffyBaseType*);
 	static void AddHuffyTypeToBitSet(int);
-	static void ConstructUpdateFromIDList(
+	static void PassPointersToHuffyTreeRootNodes(TypeQueueElement*,IDQueueElement* ,IDQueueElement* ,IDQueueElement*,BitsUsedQueueElement* );
+
+	static std::string ConstructUpdateFromIDList(
 			std::list<std::string>,
-			std::map<std::string, const HuffyBaseType* >,
-			std::map<std::string, HuffyManager::e_HuffyTypes>
-	);
+			std::map<std::string, HuffyInt* >,
+			std::map<std::string, HuffyFloat* >,
+			std::map<std::string, HuffyBool* >,
+			std::map<std::string, e_HuffyTypes>
+			);
 	
 private:
 	//Member variables 
-
-	enum e_BitSetValue 
-	{
-		e_ZERO = 0,
-		e_ONE = 1
-	};
-	static void AddIntToUpdate(std::string, int,int);
-	static void AddFloatToUpdate(std::string, int,float);
-	static void AddBoolToUpdate(std::string, int,bool);
+	static HuffyTreeManager m_TreeManager;
+	static bool m_Adapted;
+	static HuffyPacker m_Packer;
+	static void AddIntToUpdate(std::string,int);
+	static void AddFloatToUpdate(std::string,float);
+	static void AddBoolToUpdate(std::string, bool);
 	static void WriteValueToBitset(int);
+	static std::string TrimStringToIndex_Inclusive(std::string,int);
 
-	static HuffyManager::TypeQueueElement* GetPointerToTypeInTypeTreeByType(int, HuffyManager::TypeQueueElement*);
-	static void WriteIntToBuffer(int);
-	static int ReadIntFromBuffer(void);
-	static void writeInt(int,int);
-	static int readInt(int);
-
-	//Delete Tree's
-	static void DeleteOldTrees();
-	static void DeleteTypeQueueElementTree(HuffyManager::TypeQueueElement*);
-	static void DeleteIDQueueElementTree(HuffyManager::IDQueueElement*);
-	static void DeleteBitsUsedQueueElementTree(HuffyManager::BitsUsedQueueElement*);
-	static HuffyManager::TypeQueueElement* m_TypeTreeRootNode;
-	static HuffyManager::IDQueueElement* m_IntIDTreeRootNode;
-	static HuffyManager::IDQueueElement* m_FloatIDTreeRootNode;
-	static HuffyManager::IDQueueElement* m_BoolIDTreeRootNode;
-	static HuffyManager::BitsUsedQueueElement* m_BitsUsedTreeRootNode;
 
 };

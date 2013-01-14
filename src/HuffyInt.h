@@ -22,8 +22,12 @@ public:
 	//Virtual overrides
 	int GetType(void) const;
 
+	//Setter
+	void SetValue(int);
 	//Getter functions
-	int GetValue_C(void)const;
+
+	std::string GetID(void);
+	int GetValue_C(void) const;
 	int GetValue(void);
 	bool isBeingSent(void);
 	//Operator Overloads

@@ -8,4 +8,3 @@ public:
 	virtual int GetType(void) const = 0;
 private:
 };
-

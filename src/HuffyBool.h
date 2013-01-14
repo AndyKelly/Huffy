@@ -20,9 +20,12 @@ public:
 	~HuffyBool(void);
 
 	//Virtual overrides
-	int GetType(void) const;
+	int GetType(void)const;
 
+	//Setter
+	void SetValue(bool);
 	//Getter functions
+	std::string GetID(void);
 	bool GetValue_C(void)const;
 	bool GetValue(void);
 	bool isBeingSent(void);
