@@ -15,4 +15,27 @@ i.e. user@ubuntu:~/Github/Huffy/Debug$
 
 Enter the command "make Huffy"
 
-Run Huffy by typing "./Huffy"  
+Run Huffy by entering "./Huffy"
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Using Huffy
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+In order to runn the current build of Huffy you'l need to opoen two terminal windows. 
+
+Navigate both to the directory:
+user@ubuntu:~/Github/Huffy/Debug$ 
+
+Run Huffy by entering "./Huffy" in both windows
+
+First initalise one instance as a server by typing y. Huffy will then wait for a client to connect. 
+
+Initalise the other instance as a client by typing n. Huffy will ask for the address of the server. 
+As both instances are running on the same machine type: localhost
+
+Huffy will create create several HuffyTypes and assign them values on the server-side and create blank HuffyTypes on the client side with identical ID's
+Huffy will then construct an encoded string on the server-side which encodes(via huffman coding) the values contained within these types, theyre ID's, the number of bits used to hold the value and the value itself which is bitpacked into the Update string. 
+
+This Update string is then passed to the client and is displayed but not applied to the instances state, that feature will be written in the next iteration
+
+
