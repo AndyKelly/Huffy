@@ -1,5 +1,8 @@
-// SocketException class
-
+/*
+ * SocketException.h
+ *	Note:	Not my work, all credit goes to Rob Tougher
+ *	Taken From: http://linuxgazette.net/issue74/tougher.html
+ */
 #ifndef SocketException_class
 #define SocketException_class
 

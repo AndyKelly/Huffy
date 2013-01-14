@@ -1,8 +1,7 @@
 /*
  * HuffyPacker.h
  *
- *  Created on: Jan 12, 2013
- *      Author: hal
+ *      Author: Andy Kelly
  */
 
 #ifndef HUFFYPACKER_H_

@@ -1,8 +1,7 @@
 /*
  * HuffyTreeManager.h
  *
- *  Created on: Jan 13, 2013
- *      Author: hal
+ *      Author: Andy Kelly
  */
 
 #ifndef HUFFYTREEMANAGER_H_

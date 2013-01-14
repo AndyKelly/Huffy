@@ -1,3 +1,8 @@
+/*
+ * OutputManager.cpp
+ *
+ *      Author: Andy Kelly
+ */
 #include "OutputManager.h"
 #include <string>
 #include <iostream>

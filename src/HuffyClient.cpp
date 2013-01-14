@@ -1,8 +1,7 @@
 /*
  * HuffyClient.cpp
  *
- *  Created on: Jan 10, 2013
- *      Author: hal
+ *      Author: Andy Kelly
  */
 
 #include "HuffyClient.h"

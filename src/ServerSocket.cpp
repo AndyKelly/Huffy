@@ -1,5 +1,8 @@
-// Implementation of the ServerSocket class
-
+/*
+ * ServerSocket.cpp
+ *	Note:	Not my work, all credit goes to Rob Tougher
+ *	Taken From: http://linuxgazette.net/issue74/tougher.html
+ */
 #include "ServerSocket.h"
 #include "SocketException.h"
 

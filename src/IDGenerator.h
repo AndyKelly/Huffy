@@ -1,3 +1,8 @@
+/*
+ * IDGenerator.h
+ *
+ *      Author: Andy Kelly
+ */
 #pragma once
 #include <string>
 #include "HuffyManager.h"

@@ -1,8 +1,7 @@
 /*
  * HuffyTreeManager.cpp
  *
- *  Created on: Jan 13, 2013
- *      Author: hal
+ *      Author: Andy Kelly
  */
 
 #include "HuffyTreeManager.h"

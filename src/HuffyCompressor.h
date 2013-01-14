@@ -1,3 +1,8 @@
+/*
+ * HuffyCompressor.h
+ *
+ *      Author: Andy Kelly
+ */
 #pragma once
 #define BufferLimit 256
 #include <string>

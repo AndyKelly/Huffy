@@ -1,3 +1,8 @@
+/*
+ * HuffyInt.cpp
+ *
+ *      Author: Andy Kelly
+ */
 #include "HuffyInt.h"
 #include "IDGenerator.h"
 #include "HuffyManager.h"

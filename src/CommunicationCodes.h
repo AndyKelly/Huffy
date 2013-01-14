@@ -1,8 +1,7 @@
 /*
  * CommunicationCodes.h
  *
- *  Created on: Jan 10, 2013
- *      Author: hal
+ *      Author: Andy Kelly
  */
 
 #ifndef COMMUNICATIONCODES_H_

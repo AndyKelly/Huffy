@@ -1,8 +1,7 @@
 /*
  * BitString.h
  *
- *  Created on: Jan 12, 2013
- *      Author: hal
+ *      Author: Andy Kelly
  */
 
 #ifndef BITSTRING_H_

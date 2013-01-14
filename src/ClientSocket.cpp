@@ -1,4 +1,9 @@
-// Implementation of the ClientSocket class
+/*
+ * ClientSocket.cpp
+ *	Note:	Not my work, all credit goes to Rob Tougher
+ *	Taken From: http://linuxgazette.net/issue74/tougher.html
+ */
+
 
 #include "ClientSocket.h"
 #include "SocketException.h"

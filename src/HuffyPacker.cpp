@@ -1,8 +1,7 @@
 /*
  * HuffyPacker.cpp
  *
- *  Created on: Jan 12, 2013
- *      Author: hal
+ *      Author: Andy Kelly
  */
 
 #include "HuffyPacker.h"

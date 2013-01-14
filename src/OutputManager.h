@@ -1,3 +1,8 @@
+/*
+ * OutputManager.h
+ *
+ *      Author: Andy Kelly
+ */
 #pragma once
 class OutputManager
 {

@@ -1,8 +1,7 @@
 /*
  * HuffyClient.h
  *
- *  Created on: Jan 10, 2013
- *      Author: hal
+ *      Author: Andy Kelly
  */
 
 #ifndef HUFFYCLIENT_H_

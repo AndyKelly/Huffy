@@ -1,3 +1,8 @@
+/*
+ * HuffyBool.cpp
+ *
+ *      Author: Andy Kelly
+ */
 #include "HuffyBool.h"
 #include "HuffyConstants.h"
 #include "HuffyManager.h"

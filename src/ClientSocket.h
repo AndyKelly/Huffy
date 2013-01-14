@@ -1,4 +1,8 @@
-// Definition of the ClientSocket class
+/*
+ * ClientSocket.h
+ *	Note:	Not my work, all credit goes to Rob Tougher
+ *	Taken From: http://linuxgazette.net/issue74/tougher.html
+ */
 
 #ifndef ClientSocket_class
 #define ClientSocket_class

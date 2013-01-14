@@ -1,3 +1,8 @@
+/*
+ * InputManager.cpp
+ *
+ *      Author: Andy Kelly
+ */
 #include "InputManager.h"
 
 

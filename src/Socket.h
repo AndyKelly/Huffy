@@ -1,5 +1,8 @@
-// Definition of the Socket class
-
+/*
+ * Socket.h
+ *	Note:	Not my work, all credit goes to Rob Tougher
+ *	Taken From: http://linuxgazette.net/issue74/tougher.html
+ */
 #ifndef Socket_class
 #define Socket_class
 

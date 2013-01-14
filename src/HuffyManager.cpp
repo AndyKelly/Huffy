@@ -1,3 +1,8 @@
+/*
+ * HuffyManager.cpp
+ *
+ *      Author: Andy Kelly
+ */
 #include "HuffyManager.h"
 #include "HuffyCompressor.h"
 #include "HuffyConstants.h"

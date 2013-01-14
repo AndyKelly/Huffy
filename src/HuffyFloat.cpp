@@ -1,3 +1,8 @@
+/*
+ * HuffyFloat.cpp
+ *
+ *      Author: Andy Kelly
+ */
 #include "HuffyFloat.h"
 #include "IDGenerator.h"
 #include "HuffyManager.h"

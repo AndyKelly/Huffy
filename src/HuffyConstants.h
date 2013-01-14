@@ -1,8 +1,7 @@
 /*
  * HuffyConstants.h
  *
- *  Created on: Jan 13, 2013
- *      Author: hal
+ *      Author: Andy Kelly
  */
 
 #ifndef HUFFYCONSTANTS_H_

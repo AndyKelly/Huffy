@@ -1,3 +1,8 @@
+/*
+ * HuffyManager.h
+ *
+ *      Author: Andy Kelly
+ */
 #pragma once
 #include <string>
 #include "HuffyInt.h"

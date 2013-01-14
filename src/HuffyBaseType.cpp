@@ -1,3 +1,8 @@
+/*
+ * HuffyBaseType.cpp
+ *
+ *      Author: Andy Kelly
+ */
 #include "HuffyBaseType.h"
 
 

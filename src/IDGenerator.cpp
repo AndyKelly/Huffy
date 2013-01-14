@@ -1,3 +1,8 @@
+/*
+ * IDGenerator.cpp
+ *
+ *      Author: Andy Kelly
+ */
 #include "IDGenerator.h"
 #include "HuffyManager.h"
 #include "HuffyConstants.h"

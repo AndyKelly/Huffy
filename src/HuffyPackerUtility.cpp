@@ -1,8 +1,7 @@
 /*
  * HuffyPackerUtility.cpp
  *
- *  Created on: Jan 11, 2013
- *      Author: hal
+ *      Author: Andy Kelly
  */
 
 #include "HuffyPackerUtility.h"

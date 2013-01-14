@@ -1,4 +1,8 @@
-// Huffy.cpp : Defines the entry point for the console application.
+/*
+ * Huffy.cpp
+ *
+ *      Author: Andy Kelly
+ */
 
 #include <cstdlib>
 #include "InputManager.h"

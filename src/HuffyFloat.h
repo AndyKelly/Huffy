@@ -1,3 +1,8 @@
+/*
+ * HuffyFloat.h
+ *
+ *      Author: Andy Kelly
+ */
 #pragma once
 #include <string>
 #include "HuffyBaseType.h"
